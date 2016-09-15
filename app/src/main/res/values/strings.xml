@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Pocket Hacker News</string>
+    <string name="title_post_detail">Post Detail</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+
+</resources>
