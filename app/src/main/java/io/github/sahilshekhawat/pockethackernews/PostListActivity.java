@@ -22,6 +22,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
+
 import io.github.sahilshekhawat.pockethackernews.dummy.DummyContent;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -50,6 +55,9 @@ public class PostListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_list);
+
+        //Necessary to set Firebase context before using it.
+        Firebase.setAndroidContext(this);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -84,6 +92,24 @@ public class PostListActivity extends AppCompatActivity {
             // activity should be in two-pane mode.
             mTwoPane = true;
         }
+
+        //Getting data
+        Firebase firebase = new Firebase("https://hacker-news.firebaseio.com/v0/");
+        //Top stories
+        Firebase topStories = firebase.child("topstories");
+
+        topStories.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                System.out.println(dataSnapshot.getValue());
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("Read Failed with error: " + firebaseError.getMessage());
+            }
+        });
+
     }
 
     @Override
@@ -94,29 +120,46 @@ public class PostListActivity extends AppCompatActivity {
     public void initNavigationDrawer() {
 
         NavigationView navigationView = (NavigationView)findViewById(R.id.navigation_view);
+        navigationView.setCheckedItem(R.id.top);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
-
+                menuItem.setChecked(true);
                 int id = menuItem.getItemId();
 
                 switch (id){
-                    case R.id.home:
-                        Toast.makeText(getApplicationContext(),"Home",Toast.LENGTH_SHORT).show();
+                    case R.id.top:
+                        Toast.makeText(getApplicationContext(),"Top",Toast.LENGTH_SHORT).show();
                         drawerLayout.closeDrawers();
-
+                        break;
+                    case R.id.new_top:
+                        Toast.makeText(getApplicationContext(),"New",Toast.LENGTH_SHORT).show();
+                        drawerLayout.closeDrawers();
+                        break;
+                    case R.id.ask_hn:
+                        Toast.makeText(getApplicationContext(),"Ask HN",Toast.LENGTH_SHORT).show();
+                        drawerLayout.closeDrawers();
+                        break;
+                    case R.id.show_hn:
+                        Toast.makeText(getApplicationContext(),"Show HN",Toast.LENGTH_SHORT).show();
+                        drawerLayout.closeDrawers();
+                        break;
+                    case R.id.popular:
+                        Toast.makeText(getApplicationContext(),"Popular",Toast.LENGTH_SHORT).show();
+                        drawerLayout.closeDrawers();
+                        break;
+                    case R.id.bookmarks:
+                        Toast.makeText(getApplicationContext(),"Bookmarks",Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.settings:
                         Toast.makeText(getApplicationContext(),"Settings",Toast.LENGTH_SHORT).show();
+//                        Intent intent = new Intent(PostListActivity.this, SettingsActivity.class);
+//                        startActivity(intent);
                         break;
-                    case R.id.trash:
-                        Toast.makeText(getApplicationContext(),"Trash",Toast.LENGTH_SHORT).show();
-                        drawerLayout.closeDrawers();
+                    case R.id.feedback:
+                        Toast.makeText(getApplicationContext(),"Feedback",Toast.LENGTH_SHORT).show();
                         break;
-                    case R.id.logout:
-                        finish();
-
                 }
                 return true;
             }
@@ -156,6 +199,7 @@ public class PostListActivity extends AppCompatActivity {
         };
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
+
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {

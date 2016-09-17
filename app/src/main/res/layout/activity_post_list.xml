@@ -28,8 +28,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
-
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
         </android.support.design.widget.AppBarLayout>
 
 
@@ -48,7 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
-            android:src="@android:drawable/ic_dialog_email" />
+            android:src="@drawable/ic_search_white_48dp" />
 
 
     </android.support.design.widget.CoordinatorLayout>
@@ -58,7 +57,7 @@
         android:layout_height="match_parent"
         android:layout_width="wrap_content"
         android:layout_gravity="start"
-        app:headerLayout="@layout/nav_header"
-        app:menu="@menu/menu_navigation"/>
+        app:menu="@menu/menu_navigation"
+        app:headerLayout="@layout/nav_header"/>
 
 </android.support.v4.widget.DrawerLayout>

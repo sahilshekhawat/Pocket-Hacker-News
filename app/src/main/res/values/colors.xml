@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#FFFFFF</color>
-    <color name="colorPrimaryDark">#009688</color>
-    <color name="colorAccent">#009688</color>
+    <!--<color name="colorPrimary">#FFFFFF</color>-->
+    <!--<color name="colorPrimaryDark">#FFFFFF</color>-->
+    <!--<color name="colorAccent">#009688</color>-->
+    <color name="colorPrimary">#03A9F4</color>
+    <color name="colorPrimaryDark">#0288D1</color>
+    <color name="colorAccent">#FF9800</color>
+    <color name="colorPrimaryLight">#B3E5FC</color>
+    <color name="dividerColor">#BDBDBD</color>
+    <color name="text">#FFFFFF</color>
+    <color name="secondaryText">#757575</color>
     <color name="White">#FFFFFF</color>
     <color name="Black">#000000</color>
     <color name="Blue">#2196F3</color>
+    <color name="Transparent">#00000000</color>
+    <color name="statusBarColor">#50000000</color>
     <color name="Teal">#009688</color>
+    <color name="Light_Teal">#4DB6AC</color>
 
 
 </resources>

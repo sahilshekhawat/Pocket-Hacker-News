@@ -2,20 +2,36 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/home"
-            android:title="Home"
-            android:icon="@drawable/ic_home"/>
+            android:id="@+id/top"
+            android:title="Top"
+            android:icon="@drawable/ic_whatshot_white_48dp"/>
+        <item
+            android:id="@+id/new_top"
+            android:title="New"
+            android:icon="@drawable/ic_new_releases_white_48dp"/>
+        <item
+            android:id="@+id/ask_hn"
+            android:title="Ask HN"
+            android:icon="@drawable/ic_live_help_white_48dp"/>
+        <item
+            android:id="@+id/show_hn"
+            android:title="Show HN"
+            android:icon="@drawable/ic_live_tv_white_48dp"/>
+        <item
+            android:id="@+id/popular"
+            android:title="Popular by time range"
+            android:icon="@drawable/ic_trending_up_white_48dp"/>
+        <item
+            android:id="@+id/bookmarks"
+            android:title="Bookmarks"
+            android:icon="@drawable/ic_bookmark_white_48dp"/>
         <item
             android:id="@+id/settings"
             android:title="Settings"
-            android:icon="@drawable/ic_setting"/>
+            android:icon="@drawable/ic_settings_white_48dp"/>
         <item
-            android:id="@+id/trash"
-            android:title="Trash"
-            android:icon="@drawable/ic_trash"/>
-        <item
-            android:id="@+id/logout"
-            android:title="Logout"
-            android:icon="@drawable/ic_exit"/>
+            android:id="@+id/feedback"
+            android:title="Feedback"
+            android:icon="@drawable/ic_feedback_white_48dp"/>
     </group>
 </menu>
