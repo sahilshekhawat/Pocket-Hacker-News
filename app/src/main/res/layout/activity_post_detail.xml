@@ -13,6 +13,7 @@
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/app_bar_height"
+
         android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
@@ -43,10 +44,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:fitsSystemWindows="true"
+
                     android:background="@color/statusBarColor"/>
             </FrameLayout>
-
-
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/detail_toolbar"
@@ -71,7 +71,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|start"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/stat_notify_chat"
+        android:src="@drawable/ic_bookmark_white_48dp"
         app:layout_anchor="@+id/post_detail_container"
         app:layout_anchorGravity="top|end" />
 

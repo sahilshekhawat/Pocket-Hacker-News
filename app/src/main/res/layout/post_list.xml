@@ -6,8 +6,7 @@
     android:name="io.github.sahilshekhawat.pockethackernews.PostListFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
     tools:context="io.github.sahilshekhawat.pockethackernews.PostListActivity"
-    tools:listitem="@layout/post_list_content" />
+    tools:listitem="@layout/post_list_content"
+    android:background="@color/dividerColor"/>
