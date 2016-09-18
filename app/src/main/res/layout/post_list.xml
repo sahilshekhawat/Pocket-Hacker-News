@@ -7,6 +7,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layoutManager="LinearLayoutManager"
-    tools:context="io.github.sahilshekhawat.pockethackernews.PostListActivity"
+    tools:context=".Activities.PostListActivity"
     tools:listitem="@layout/post_list_content"
     android:background="@color/dividerColor"/>

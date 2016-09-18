@@ -1,4 +1,4 @@
-package io.github.sahilshekhawat.pockethackernews;
+package io.github.sahilshekhawat.pockethackernews.Activities;
 
 
 import android.annotation.TargetApi;
@@ -21,6 +21,8 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
 import java.util.List;
+
+import io.github.sahilshekhawat.pockethackernews.R;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On

@@ -1,4 +1,4 @@
-package io.github.sahilshekhawat.pockethackernews;
+package io.github.sahilshekhawat.pockethackernews.Activities;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

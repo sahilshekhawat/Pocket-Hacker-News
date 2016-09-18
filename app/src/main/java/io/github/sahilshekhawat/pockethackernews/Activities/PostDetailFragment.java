@@ -1,4 +1,4 @@
-package io.github.sahilshekhawat.pockethackernews;
+package io.github.sahilshekhawat.pockethackernews.Activities;
 
 import android.app.Activity;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import io.github.sahilshekhawat.pockethackernews.R;
 import io.github.sahilshekhawat.pockethackernews.dummy.DummyContent;
 
 /**

@@ -1,4 +1,4 @@
-package io.github.sahilshekhawat.pockethackernews;
+package io.github.sahilshekhawat.pockethackernews.Activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,11 +13,10 @@ import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,10 +26,15 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
+import io.github.sahilshekhawat.pockethackernews.Data.Data;
+import io.github.sahilshekhawat.pockethackernews.Data.Items;
+import io.github.sahilshekhawat.pockethackernews.Data.StoryType;
+import io.github.sahilshekhawat.pockethackernews.R;
 import io.github.sahilshekhawat.pockethackernews.dummy.DummyContent;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,6 +54,15 @@ public class PostListActivity extends AppCompatActivity {
     private boolean mTwoPane;
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
+    private NavigationView navigationView;
+    Firebase firebase;
+    Firebase firebaseTopStories = null;
+    Firebase firebaseNewStories = null;
+    Firebase firebaseBestStories = null;
+    Firebase firebaseAskStories = null;
+    Firebase firebaseShowStories = null;
+    Firebase firebaseJobStories = null;
+    Data data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +76,6 @@ public class PostListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
 
-        // Navigation Drawer
-        initNavigationDrawer();
-
         //Changing fonts
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
                         .setDefaultFontPath("fonts/MuseoSans_500.otf")
@@ -76,7 +86,7 @@ public class PostListActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Search is TODO", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -93,22 +103,15 @@ public class PostListActivity extends AppCompatActivity {
             mTwoPane = true;
         }
 
+        //Setting data
+        data = new Data();
+
         //Getting data
-        Firebase firebase = new Firebase("https://hacker-news.firebaseio.com/v0/");
-        //Top stories
-        Firebase topStories = firebase.child("topstories");
+        firebase = new Firebase("https://hacker-news.firebaseio.com/v0/");
+        // Navigation Drawer
+        navigationView = (NavigationView)findViewById(R.id.navigation_view);
+        initNavigationDrawer();
 
-        topStories.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                System.out.println(dataSnapshot.getValue());
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                System.out.println("Read Failed with error: " + firebaseError.getMessage());
-            }
-        });
 
     }
 
@@ -119,35 +122,52 @@ public class PostListActivity extends AppCompatActivity {
 
     public void initNavigationDrawer() {
 
-        NavigationView navigationView = (NavigationView)findViewById(R.id.navigation_view);
         navigationView.setCheckedItem(R.id.top);
-
+        if(firebaseTopStories == null)
+            firebaseTopStories = firebase.child(StoryType.TOPSTORIES);
+        getData(firebaseTopStories, StoryType.TOPSTORIES);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 menuItem.setChecked(true);
                 int id = menuItem.getItemId();
-
                 switch (id){
                     case R.id.top:
                         Toast.makeText(getApplicationContext(),"Top",Toast.LENGTH_SHORT).show();
                         drawerLayout.closeDrawers();
+                        if(firebaseTopStories == null)
+                            firebaseTopStories = firebase.child(StoryType.TOPSTORIES);
+                        getData(firebaseTopStories, StoryType.TOPSTORIES);
                         break;
+
                     case R.id.new_top:
                         Toast.makeText(getApplicationContext(),"New",Toast.LENGTH_SHORT).show();
                         drawerLayout.closeDrawers();
+                        if(firebaseNewStories == null)
+                            firebaseNewStories = firebase.child(StoryType.NEWSTORIES);
+                        getData(firebaseNewStories, StoryType.NEWSTORIES);
                         break;
+
                     case R.id.ask_hn:
                         Toast.makeText(getApplicationContext(),"Ask HN",Toast.LENGTH_SHORT).show();
                         drawerLayout.closeDrawers();
+                        if(firebaseAskStories == null)
+                            firebaseAskStories = firebase.child(StoryType.ASKSTORIES);
+                        getData(firebaseAskStories, StoryType.ASKSTORIES);
                         break;
                     case R.id.show_hn:
                         Toast.makeText(getApplicationContext(),"Show HN",Toast.LENGTH_SHORT).show();
                         drawerLayout.closeDrawers();
+                        if(firebaseShowStories == null)
+                            firebaseShowStories = firebase.child(StoryType.SHOWSTORIES);
+                        getData(firebaseShowStories, StoryType.SHOWSTORIES);
                         break;
                     case R.id.popular:
                         Toast.makeText(getApplicationContext(),"Popular",Toast.LENGTH_SHORT).show();
                         drawerLayout.closeDrawers();
+                        if(firebaseBestStories == null)
+                            firebaseBestStories = firebase.child(StoryType.BESTSTORIES);
+                        getData(firebaseBestStories,  StoryType.BESTSTORIES);
                         break;
                     case R.id.bookmarks:
                         Toast.makeText(getApplicationContext(),"Bookmarks",Toast.LENGTH_SHORT).show();
@@ -204,6 +224,50 @@ public class PostListActivity extends AppCompatActivity {
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
         recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
+    }
+
+    private void getData(Firebase firebase,final String child){
+        firebase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                System.out.println(dataSnapshot.getValue());
+                if(child.equals(StoryType.TOPSTORIES))
+                    data.topStories = (ArrayList<Integer>)dataSnapshot.getValue();
+                if(child.equals(StoryType.NEWSTORIES))
+                    data.newStories = (ArrayList<Integer>)dataSnapshot.getValue();
+                if(child.equals(StoryType.ASKSTORIES))
+                    data.askStories = (ArrayList<Integer>)dataSnapshot.getValue();
+                if(child.equals(StoryType.SHOWSTORIES))
+                    data.showStories = (ArrayList<Integer>)dataSnapshot.getValue();
+                if(child.equals(StoryType.BESTSTORIES))
+                    data.bestStories = (ArrayList<Integer>)dataSnapshot.getValue();
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("Read Failed with error: " + firebaseError.getMessage());
+            }
+        });
+    }
+
+    private void getItem(Firebase firebase, Integer id){
+        Firebase firebaseItem = firebase.child(Integer.toString(id));
+        firebaseItem.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                System.out.println(dataSnapshot.getValue());
+                //data.items[id] = ()
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+    }
+
+    private void swapListData(ArrayList<Items> items){
+        //TODO
     }
 
     public class SimpleItemRecyclerViewAdapter
