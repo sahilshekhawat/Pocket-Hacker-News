@@ -7,6 +7,7 @@ import android.support.annotation.IntegerRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -72,6 +73,7 @@ public class PostListActivity extends AppCompatActivity {
     ArrayList<Items> dataSet = new ArrayList<>();
     ItemRecyclerViewAdapter itemRecyclerViewAdapter;
     String currentStoryType;
+    SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +86,16 @@ public class PostListActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle(getTitle());
+
+        // setting swipe refresh
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_post_list_swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshContent();
+                itemRecyclerViewAdapter.notifyDataSetChanged();
+            }
+        });
 
         //Changing fonts
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
@@ -136,6 +148,7 @@ public class PostListActivity extends AppCompatActivity {
         if(firebaseTopStories == null)
             firebaseTopStories = firebase.child(StoryType.TOPSTORIES);
         currentStoryType = StoryType.TOPSTORIES;
+        swipeRefreshLayout.setRefreshing(true);
         getData(firebaseTopStories, StoryType.TOPSTORIES);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -150,6 +163,7 @@ public class PostListActivity extends AppCompatActivity {
                         currentStoryType = StoryType.TOPSTORIES;
                         if(firebaseTopStories == null)
                             firebaseTopStories = firebase.child(StoryType.TOPSTORIES);
+                        swipeRefreshLayout.setRefreshing(true);
                         getData(firebaseTopStories, StoryType.TOPSTORIES);
                         break;
 
@@ -159,6 +173,7 @@ public class PostListActivity extends AppCompatActivity {
                         currentStoryType = StoryType.NEWSTORIES;
                         if(firebaseNewStories == null)
                             firebaseNewStories = firebase.child(StoryType.NEWSTORIES);
+                        swipeRefreshLayout.setRefreshing(true);
                         getData(firebaseNewStories, StoryType.NEWSTORIES);
                         break;
 
@@ -168,6 +183,7 @@ public class PostListActivity extends AppCompatActivity {
                         currentStoryType = StoryType.ASKSTORIES;
                         if(firebaseAskStories == null)
                             firebaseAskStories = firebase.child(StoryType.ASKSTORIES);
+                        swipeRefreshLayout.setRefreshing(true);
                         getData(firebaseAskStories, StoryType.ASKSTORIES);
                         break;
                     case R.id.show_hn:
@@ -176,6 +192,7 @@ public class PostListActivity extends AppCompatActivity {
                         currentStoryType = StoryType.SHOWSTORIES;
                         if(firebaseShowStories == null)
                             firebaseShowStories = firebase.child(StoryType.SHOWSTORIES);
+                        swipeRefreshLayout.setRefreshing(true);
                         getData(firebaseShowStories, StoryType.SHOWSTORIES);
                         break;
                     case R.id.popular:
@@ -184,6 +201,7 @@ public class PostListActivity extends AppCompatActivity {
                         currentStoryType = StoryType.BESTSTORIES;
                         if(firebaseBestStories == null)
                             firebaseBestStories = firebase.child(StoryType.BESTSTORIES);
+                        swipeRefreshLayout.setRefreshing(true);
                         getData(firebaseBestStories,  StoryType.BESTSTORIES);
                         break;
                     case R.id.bookmarks:
@@ -237,6 +255,11 @@ public class PostListActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
 
+    }
+
+    private void refreshContent(){
+        swipeRefreshLayout.setRefreshing(true);
+        getItemsForType(currentStoryType);
     }
 
     private void getItemsForType(String storyType){
@@ -324,12 +347,15 @@ public class PostListActivity extends AppCompatActivity {
 //                    item.setType(json.getString("type"));
 //                    item.setBy(json.getString("by"));
 
-
+                Data.items.put(item.id, item);
 
                 if(currentStoryType.equals(storyType)){
                     dataSet.add(item);
                     itemRecyclerViewAdapter.notifyDataSetChanged();
                 }
+
+                if(swipeRefreshLayout.isRefreshing())
+                    swipeRefreshLayout.setRefreshing(false);
                 //data.items[id] = ()
             }
 
@@ -363,13 +389,20 @@ public class PostListActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.mItem = mValues.get(position);
-            holder.title.setText(mValues.get(position).title);
-            holder.score.setText(Long.toString(mValues.get(position).score));
-            holder.time.setText(Long.toString(mValues.get(position).time));
-            holder.by.setText(mValues.get(position).by);
-            holder.text.setText(mValues.get(position).text);
-            String comments = Integer.toString(mValues.get(position).kids.size());
-            holder.numKids.setText(comments);
+            if(holder.mItem.title != null)
+                holder.title.setText(mValues.get(position).title);
+            if(holder.mItem.score != null)
+                holder.score.setText(Long.toString(mValues.get(position).score));
+            if(holder.mItem.time != null)
+                holder.time.setText(Long.toString(mValues.get(position).time));
+            if(holder.mItem.by != null)
+                holder.by.setText(mValues.get(position).by);
+            if(holder.mItem.text != null)
+                holder.text.setText(mValues.get(position).text);
+            if(holder.mItem.kids != null) {
+                String comments = Integer.toString(mValues.get(position).kids.size());
+                holder.numKids.setText(comments);
+            }
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override

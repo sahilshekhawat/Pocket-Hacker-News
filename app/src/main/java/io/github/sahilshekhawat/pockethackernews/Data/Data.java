@@ -14,7 +14,7 @@ public class Data {
     public ArrayList<Long> showStories;
     public ArrayList<Long> jobStories;
 
-    public HashMap<Long, Items> items;
+    public static HashMap<Long, Items> items;
 
     public Data() {
         items = new HashMap<>();

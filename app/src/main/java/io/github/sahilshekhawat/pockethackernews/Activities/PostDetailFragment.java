@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import io.github.sahilshekhawat.pockethackernews.Data.Data;
+import io.github.sahilshekhawat.pockethackernews.Data.Items;
 import io.github.sahilshekhawat.pockethackernews.R;
 import io.github.sahilshekhawat.pockethackernews.dummy.DummyContent;
 
@@ -28,7 +30,7 @@ public class PostDetailFragment extends Fragment {
     /**
      * The dummy content this fragment is presenting.
      */
-    private DummyContent.DummyItem mItem;
+    private Items mItem;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -45,12 +47,13 @@ public class PostDetailFragment extends Fragment {
             // Load the dummy content specified by the fragment
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
-            mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
-
+            mItem = Data.items.get(Long.parseLong(getArguments().getString(ARG_ITEM_ID)));
+            System.out.println("@#@@@@@@@@@@@@@@@@@@@@@@22");
+            System.out.println(mItem);
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
-                appBarLayout.setTitle(mItem.content);
+                appBarLayout.setTitle(mItem.title);
             }
         }
     }
@@ -62,7 +65,7 @@ public class PostDetailFragment extends Fragment {
 
         // Show the dummy content as text in a TextView.
         if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.post_detail)).setText(mItem.details);
+            ((TextView) rootView.findViewById(R.id.post_detail)).setText(mItem.text);
         }
 
         return rootView;
