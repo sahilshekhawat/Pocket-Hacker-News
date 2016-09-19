@@ -32,15 +32,23 @@
         </android.support.design.widget.AppBarLayout>
 
 
-        <FrameLayout
-            android:id="@+id/frameLayout"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/activity_post_list_swipe_refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/postBackground"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            android:layout_height="wrap_content">
 
-            <include layout="@layout/post_list" />
-        </FrameLayout>
+            <FrameLayout
+                android:id="@+id/frameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/postBackground"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <include layout="@layout/post_list" />
+            </FrameLayout>
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"

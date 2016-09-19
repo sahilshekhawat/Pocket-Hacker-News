@@ -7,16 +7,17 @@ import java.util.HashMap;
  * Created by sahil on 9/18/16.
  */
 public class Data {
-    public ArrayList<Integer> topStories;
-    public ArrayList<Integer> newStories;
-    public ArrayList<Integer> bestStories;
-    public ArrayList<Integer> askStories;
-    public ArrayList<Integer> showStories;
-    public ArrayList<Integer> jobStories;
+    public ArrayList<Long> topStories;
+    public ArrayList<Long> newStories;
+    public ArrayList<Long> bestStories;
+    public ArrayList<Long> askStories;
+    public ArrayList<Long> showStories;
+    public ArrayList<Long> jobStories;
 
-    public HashMap<Integer, Items> items;
+    public HashMap<Long, Items> items;
 
     public Data() {
+        items = new HashMap<>();
     }
 
 

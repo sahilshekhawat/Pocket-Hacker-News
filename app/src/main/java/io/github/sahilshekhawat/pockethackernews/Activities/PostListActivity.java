@@ -3,6 +3,7 @@ package io.github.sahilshekhawat.pockethackernews.Activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.IntegerRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -13,7 +14,6 @@ import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +26,10 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import io.github.sahilshekhawat.pockethackernews.Data.Data;
 import io.github.sahilshekhawat.pockethackernews.Data.Items;
 import io.github.sahilshekhawat.pockethackernews.Data.StoryType;
@@ -35,6 +39,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -62,7 +67,11 @@ public class PostListActivity extends AppCompatActivity {
     Firebase firebaseAskStories = null;
     Firebase firebaseShowStories = null;
     Firebase firebaseJobStories = null;
+    Firebase firebaseItems = null;
     Data data;
+    ArrayList<Items> dataSet = new ArrayList<>();
+    ItemRecyclerViewAdapter itemRecyclerViewAdapter;
+    String currentStoryType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +117,7 @@ public class PostListActivity extends AppCompatActivity {
 
         //Getting data
         firebase = new Firebase("https://hacker-news.firebaseio.com/v0/");
+        firebaseItems = firebase.child("item");
         // Navigation Drawer
         navigationView = (NavigationView)findViewById(R.id.navigation_view);
         initNavigationDrawer();
@@ -125,7 +135,9 @@ public class PostListActivity extends AppCompatActivity {
         navigationView.setCheckedItem(R.id.top);
         if(firebaseTopStories == null)
             firebaseTopStories = firebase.child(StoryType.TOPSTORIES);
+        currentStoryType = StoryType.TOPSTORIES;
         getData(firebaseTopStories, StoryType.TOPSTORIES);
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -135,6 +147,7 @@ public class PostListActivity extends AppCompatActivity {
                     case R.id.top:
                         Toast.makeText(getApplicationContext(),"Top",Toast.LENGTH_SHORT).show();
                         drawerLayout.closeDrawers();
+                        currentStoryType = StoryType.TOPSTORIES;
                         if(firebaseTopStories == null)
                             firebaseTopStories = firebase.child(StoryType.TOPSTORIES);
                         getData(firebaseTopStories, StoryType.TOPSTORIES);
@@ -143,6 +156,7 @@ public class PostListActivity extends AppCompatActivity {
                     case R.id.new_top:
                         Toast.makeText(getApplicationContext(),"New",Toast.LENGTH_SHORT).show();
                         drawerLayout.closeDrawers();
+                        currentStoryType = StoryType.NEWSTORIES;
                         if(firebaseNewStories == null)
                             firebaseNewStories = firebase.child(StoryType.NEWSTORIES);
                         getData(firebaseNewStories, StoryType.NEWSTORIES);
@@ -151,6 +165,7 @@ public class PostListActivity extends AppCompatActivity {
                     case R.id.ask_hn:
                         Toast.makeText(getApplicationContext(),"Ask HN",Toast.LENGTH_SHORT).show();
                         drawerLayout.closeDrawers();
+                        currentStoryType = StoryType.ASKSTORIES;
                         if(firebaseAskStories == null)
                             firebaseAskStories = firebase.child(StoryType.ASKSTORIES);
                         getData(firebaseAskStories, StoryType.ASKSTORIES);
@@ -158,6 +173,7 @@ public class PostListActivity extends AppCompatActivity {
                     case R.id.show_hn:
                         Toast.makeText(getApplicationContext(),"Show HN",Toast.LENGTH_SHORT).show();
                         drawerLayout.closeDrawers();
+                        currentStoryType = StoryType.SHOWSTORIES;
                         if(firebaseShowStories == null)
                             firebaseShowStories = firebase.child(StoryType.SHOWSTORIES);
                         getData(firebaseShowStories, StoryType.SHOWSTORIES);
@@ -165,6 +181,7 @@ public class PostListActivity extends AppCompatActivity {
                     case R.id.popular:
                         Toast.makeText(getApplicationContext(),"Popular",Toast.LENGTH_SHORT).show();
                         drawerLayout.closeDrawers();
+                        currentStoryType = StoryType.BESTSTORIES;
                         if(firebaseBestStories == null)
                             firebaseBestStories = firebase.child(StoryType.BESTSTORIES);
                         getData(firebaseBestStories,  StoryType.BESTSTORIES);
@@ -222,8 +239,34 @@ public class PostListActivity extends AppCompatActivity {
 
     }
 
+    private void getItemsForType(String storyType){
+        dataSet.clear();
+        ArrayList<Long> stories = new ArrayList<>();
+        if(storyType.equals(StoryType.TOPSTORIES))
+            stories = data.topStories;
+        if(storyType.equals(StoryType.BESTSTORIES))
+            stories = data.bestStories;
+        if(storyType.equals(StoryType.NEWSTORIES))
+            stories = data.newStories;
+        if(storyType.equals(StoryType.SHOWSTORIES))
+            stories = data.showStories;
+        if(storyType.equals(StoryType.ASKSTORIES))
+            stories = data.askStories;
+
+
+        for(Integer i = 0; i<stories.size(); i++  ){
+            Long id = stories.get(i);
+            if(data.items.get(id) == null){
+                getItem(firebaseItems, id, storyType);
+            } else{
+                break;
+            }
+        }
+    }
+
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-        recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
+        itemRecyclerViewAdapter = new ItemRecyclerViewAdapter(dataSet);
+        recyclerView.setAdapter(itemRecyclerViewAdapter);
     }
 
     private void getData(Firebase firebase,final String child){
@@ -231,16 +274,26 @@ public class PostListActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 System.out.println(dataSnapshot.getValue());
-                if(child.equals(StoryType.TOPSTORIES))
-                    data.topStories = (ArrayList<Integer>)dataSnapshot.getValue();
-                if(child.equals(StoryType.NEWSTORIES))
-                    data.newStories = (ArrayList<Integer>)dataSnapshot.getValue();
-                if(child.equals(StoryType.ASKSTORIES))
-                    data.askStories = (ArrayList<Integer>)dataSnapshot.getValue();
-                if(child.equals(StoryType.SHOWSTORIES))
-                    data.showStories = (ArrayList<Integer>)dataSnapshot.getValue();
-                if(child.equals(StoryType.BESTSTORIES))
-                    data.bestStories = (ArrayList<Integer>)dataSnapshot.getValue();
+                if(child.equals(StoryType.TOPSTORIES)){
+                    data.topStories = (ArrayList<Long>)dataSnapshot.getValue();
+                    getItemsForType(StoryType.TOPSTORIES);
+                }
+                if(child.equals(StoryType.NEWSTORIES)) {
+                    data.newStories = (ArrayList<Long>)dataSnapshot.getValue();
+                    getItemsForType(StoryType.NEWSTORIES);
+                }
+                if(child.equals(StoryType.ASKSTORIES)) {
+                    data.askStories = (ArrayList<Long>)dataSnapshot.getValue();
+                    getItemsForType(StoryType.ASKSTORIES);
+                }
+                if(child.equals(StoryType.SHOWSTORIES)) {
+                    data.showStories = (ArrayList<Long>)dataSnapshot.getValue();
+                    getItemsForType(StoryType.SHOWSTORIES);
+                }
+                if(child.equals(StoryType.BESTSTORIES)) {
+                    data.bestStories = (ArrayList<Long>)dataSnapshot.getValue();
+                    getItemsForType(StoryType.BESTSTORIES);
+                }
             }
 
             @Override
@@ -250,12 +303,33 @@ public class PostListActivity extends AppCompatActivity {
         });
     }
 
-    private void getItem(Firebase firebase, Integer id){
-        Firebase firebaseItem = firebase.child(Integer.toString(id));
+    private void getItem(Firebase firebase, final Long id, final String storyType){
+        Firebase firebaseItem = firebaseItems.child(Long.toString(id));
         firebaseItem.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 System.out.println(dataSnapshot.getValue());
+                Items item = new Items();
+                HashMap<String, Object> dataSnapshotValue = (HashMap<String, Object>) dataSnapshot.getValue();
+
+                item.setId((Long) dataSnapshotValue.get("id"));
+                item.setTitle((String) dataSnapshotValue.get("title"));
+                item.setType((String) dataSnapshotValue.get("type"));
+                item.setKids((ArrayList<Long>) dataSnapshotValue.get("kids"));
+                item.setScore((Long) dataSnapshotValue.get("score"));
+                item.setBy((String) dataSnapshotValue.get("by"));
+                item.setText((String) dataSnapshotValue.get("text"));
+                item.setTime((Long) dataSnapshotValue.get("time"));
+//                    item.setDeleted(json.getBoolean("deleted"));
+//                    item.setType(json.getString("type"));
+//                    item.setBy(json.getString("by"));
+
+
+
+                if(currentStoryType.equals(storyType)){
+                    dataSet.add(item);
+                    itemRecyclerViewAdapter.notifyDataSetChanged();
+                }
                 //data.items[id] = ()
             }
 
@@ -270,12 +344,12 @@ public class PostListActivity extends AppCompatActivity {
         //TODO
     }
 
-    public class SimpleItemRecyclerViewAdapter
-            extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> {
+    public class ItemRecyclerViewAdapter
+            extends RecyclerView.Adapter<ItemRecyclerViewAdapter.ViewHolder> {
 
-        private final List<DummyContent.DummyItem> mValues;
+        private final List<Items> mValues;
 
-        public SimpleItemRecyclerViewAdapter(List<DummyContent.DummyItem> items) {
+        public ItemRecyclerViewAdapter(List<Items> items) {
             mValues = items;
         }
 
@@ -289,15 +363,20 @@ public class PostListActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.mItem = mValues.get(position);
-            holder.mIdView.setText(mValues.get(position).id);
-            holder.mContentView.setText(mValues.get(position).content);
+            holder.title.setText(mValues.get(position).title);
+            holder.score.setText(Long.toString(mValues.get(position).score));
+            holder.time.setText(Long.toString(mValues.get(position).time));
+            holder.by.setText(mValues.get(position).by);
+            holder.text.setText(mValues.get(position).text);
+            String comments = Integer.toString(mValues.get(position).kids.size());
+            holder.numKids.setText(comments);
 
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (mTwoPane) {
                         Bundle arguments = new Bundle();
-                        arguments.putString(PostDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+                        arguments.putString(PostDetailFragment.ARG_ITEM_ID, Long.toString(holder.mItem.id));
                         PostDetailFragment fragment = new PostDetailFragment();
                         fragment.setArguments(arguments);
                         getSupportFragmentManager().beginTransaction()
@@ -306,7 +385,7 @@ public class PostListActivity extends AppCompatActivity {
                     } else {
                         Context context = v.getContext();
                         Intent intent = new Intent(context, PostDetailActivity.class);
-                        intent.putExtra(PostDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+                        intent.putExtra(PostDetailFragment.ARG_ITEM_ID, Long.toString(holder.mItem.id));
 
                         context.startActivity(intent);
                     }
@@ -321,20 +400,29 @@ public class PostListActivity extends AppCompatActivity {
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             public final View mView;
-            public final TextView mIdView;
-            public final TextView mContentView;
-            public DummyContent.DummyItem mItem;
+            public final TextView title;
+            public final TextView score;
+            public final TextView time;
+            public final TextView by;
+            public final TextView text;
+            public final TextView numKids;
+            public Items mItem;
 
             public ViewHolder(View view) {
                 super(view);
                 mView = view;
-                mIdView = (TextView) view.findViewById(R.id.id);
-                mContentView = (TextView) view.findViewById(R.id.content);
+                title = (TextView) view.findViewById(R.id.title);
+                score = (TextView) view.findViewById(R.id.score);
+                time = (TextView) view.findViewById(R.id.time);
+                by = (TextView) view.findViewById(R.id.by);
+                text = (TextView) view.findViewById(R.id.text);
+                numKids = (TextView) view.findViewById(R.id.numKids);
+
             }
 
             @Override
             public String toString() {
-                return super.toString() + " '" + mContentView.getText() + "'";
+                return super.toString() + " '" + title.getText() + "'";
             }
         }
     }

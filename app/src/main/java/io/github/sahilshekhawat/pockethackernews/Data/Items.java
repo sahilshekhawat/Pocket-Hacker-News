@@ -7,29 +7,29 @@ import java.util.Date;
  * Created by sahil on 9/18/16.
  */
 public class Items {
-    public Integer id = null;
+    public Long id = null;
     public Boolean deleted = null;
     public ItemType type = null;
     public String by = null; //author's username
-    public Date time = null;
+    public Long time = null;
     public String text = null;
     public Boolean dead = null;
-    public Integer parent = null;
-    public ArrayList<Integer> kids = null;
+    public Long parent = null;
+    public ArrayList<Long> kids = null;
     public String url = null;
-    public Integer score = null;
+    public Long score = null;
     public String title = null;
-    public ArrayList<Integer> parts = null;
-    public Integer descendants = null;
+    public ArrayList<Long> parts = null;
+    public Long descendants = null;
 
     public Items(){
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -45,16 +45,49 @@ public class Items {
         return type;
     }
 
-    public void setType(ItemType type) {
-        this.type = type;
+    public void setType(String type) {
+        if(type.equals("story"))
+            this.type = ItemType.STORY;
+        if(type.equals("comment"))
+            this.type = ItemType.COMMENT;
+        if(type.equals("job"))
+            this.type = ItemType.JOB;
+        if(type.equals("poll"))
+            this.type = ItemType.POLL;
+        if(type.equals("pollopt"))
+            this.type = ItemType.POLLOPT;
     }
 
-    public Date getTime() {
+    public Long getTime() {
         return time;
     }
 
-    public void setTime(Date time) {
+    public void setTime(Long time) {
         this.time = time;
+    }
+
+    public Long getParent() {
+        return parent;
+    }
+
+    public void setParent(Long parent) {
+        this.parent = parent;
+    }
+
+    public Long getScore() {
+        return score;
+    }
+
+    public void setScore(Long score) {
+        this.score = score;
+    }
+
+    public Long getDescendants() {
+        return descendants;
+    }
+
+    public void setDescendants(Long descendants) {
+        this.descendants = descendants;
     }
 
     public String getBy() {
@@ -81,21 +114,6 @@ public class Items {
         this.dead = dead;
     }
 
-    public Integer getParent() {
-        return parent;
-    }
-
-    public void setParent(Integer parent) {
-        this.parent = parent;
-    }
-
-    public ArrayList<Integer> getKids() {
-        return kids;
-    }
-
-    public void setKids(ArrayList<Integer> kids) {
-        this.kids = kids;
-    }
 
     public String getUrl() {
         return url;
@@ -105,13 +123,6 @@ public class Items {
         this.url = url;
     }
 
-    public Integer getScore() {
-        return score;
-    }
-
-    public void setScore(Integer score) {
-        this.score = score;
-    }
 
     public String getTitle() {
         return title;
@@ -121,19 +132,20 @@ public class Items {
         this.title = title;
     }
 
-    public ArrayList<Integer> getParts() {
+    public ArrayList<Long> getParts() {
         return parts;
     }
 
-    public void setParts(ArrayList<Integer> parts) {
+    public void setParts(ArrayList<Long> parts) {
         this.parts = parts;
     }
 
-    public Integer getDescendants() {
-        return descendants;
+    public ArrayList<Long> getKids() {
+        return kids;
     }
 
-    public void setDescendants(Integer descendants) {
-        this.descendants = descendants;
+    public void setKids(ArrayList<Long> kids) {
+        this.kids = kids;
     }
+
 }
