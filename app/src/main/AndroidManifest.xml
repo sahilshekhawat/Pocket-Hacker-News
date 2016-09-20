@@ -37,7 +37,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Activities.PostListActivity" />
         </activity>
-        <activity  android:name=".Activities.WebViewActivity"></activity>
+        <activity
+            android:name=".Activities.WebViewActivity"
+            android:parentActivityName=".Activities.PostListActivity"></activity>
     </application>
 
 </manifest>

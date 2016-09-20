@@ -80,6 +80,7 @@ public class PostListActivity extends AppCompatActivity {
     Firebase firebaseJobStories = null;
     Firebase firebaseItems = null;
     Data data;
+    ArrayList<Items> dataItemsArray;
     RecyclerView recyclerView;
     ItemRecyclerViewAdapter itemRecyclerViewAdapter;
     String currentStoryType;
@@ -134,6 +135,11 @@ public class PostListActivity extends AppCompatActivity {
 
         //Setting data
         data = new Data();
+        //Setting dataItemsArray
+        dataItemsArray = new ArrayList<>();
+        copyToDataItemsArray(data.topStoryItems);
+        //Setting default adapter
+        setupRecyclerViewAdapter(recyclerView);
 
 
         //Getting data
@@ -150,10 +156,17 @@ public class PostListActivity extends AppCompatActivity {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
-    private void setupRecyclerViewAdapter(@NonNull RecyclerView recyclerView, ArrayList<Items> dataSet) {
-        itemRecyclerViewAdapter = new ItemRecyclerViewAdapter(dataSet);
+    private void setupRecyclerViewAdapter(@NonNull RecyclerView recyclerView) {
+        itemRecyclerViewAdapter = new ItemRecyclerViewAdapter(dataItemsArray);
         recyclerView.setAdapter(itemRecyclerViewAdapter);
         itemRecyclerViewAdapter.notifyDataSetChanged();
+    }
+
+    private void copyToDataItemsArray(ArrayList<Items> itemsArray){
+        dataItemsArray.clear();
+        for(Items item: itemsArray){
+            dataItemsArray.add(item);
+        }
     }
 
     private void refreshContent(){
@@ -168,7 +181,6 @@ public class PostListActivity extends AppCompatActivity {
             firebaseTopStories = firebase.child(StoryType.TOPSTORIES);
         currentStoryType = StoryType.TOPSTORIES;
         swipeRefreshLayout.setRefreshing(true);
-        setupRecyclerViewAdapter(recyclerView, data.topStoryItems);
         getData(firebaseTopStories, StoryType.TOPSTORIES);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -181,7 +193,8 @@ public class PostListActivity extends AppCompatActivity {
                         drawerLayout.closeDrawers();
                         currentStoryType = StoryType.TOPSTORIES;
                         swipeRefreshLayout.setRefreshing(true);
-                        setupRecyclerViewAdapter(recyclerView, data.topStoryItems);
+                        copyToDataItemsArray(data.topStoryItems);
+                        setupRecyclerViewAdapter(recyclerView);
                         if(firebaseTopStories == null){
                             firebaseTopStories = firebase.child(StoryType.TOPSTORIES);
                             getData(firebaseTopStories, StoryType.TOPSTORIES);
@@ -196,7 +209,8 @@ public class PostListActivity extends AppCompatActivity {
                         drawerLayout.closeDrawers();
                         currentStoryType = StoryType.NEWSTORIES;
                         swipeRefreshLayout.setRefreshing(true);
-                        setupRecyclerViewAdapter(recyclerView, data.newStoryItems);
+                        copyToDataItemsArray(data.newStoryItems);
+                        setupRecyclerViewAdapter(recyclerView);
                         if(firebaseNewStories == null){
                             firebaseNewStories = firebase.child(StoryType.NEWSTORIES);
                             getData(firebaseNewStories, StoryType.NEWSTORIES);
@@ -210,7 +224,8 @@ public class PostListActivity extends AppCompatActivity {
                         drawerLayout.closeDrawers();
                         currentStoryType = StoryType.ASKSTORIES;
                         swipeRefreshLayout.setRefreshing(true);
-                        setupRecyclerViewAdapter(recyclerView, data.askStoryItems);
+                        copyToDataItemsArray(data.askStoryItems);
+                        setupRecyclerViewAdapter(recyclerView);
                         if(firebaseAskStories == null){
                             firebaseAskStories = firebase.child(StoryType.ASKSTORIES);
                             getData(firebaseAskStories, StoryType.ASKSTORIES);
@@ -225,7 +240,8 @@ public class PostListActivity extends AppCompatActivity {
                         drawerLayout.closeDrawers();
                         currentStoryType = StoryType.SHOWSTORIES;
                         swipeRefreshLayout.setRefreshing(true);
-                        setupRecyclerViewAdapter(recyclerView, data.showStoryItems);
+                        copyToDataItemsArray(data.showStoryItems);
+                        setupRecyclerViewAdapter(recyclerView);
                         if(firebaseShowStories == null){
                             firebaseShowStories = firebase.child(StoryType.SHOWSTORIES);
 
@@ -240,7 +256,8 @@ public class PostListActivity extends AppCompatActivity {
                         drawerLayout.closeDrawers();
                         currentStoryType = StoryType.BESTSTORIES;
                         swipeRefreshLayout.setRefreshing(true);
-                        setupRecyclerViewAdapter(recyclerView, data.bestStoryItems);
+                        copyToDataItemsArray(data.bestStoryItems);
+                        setupRecyclerViewAdapter(recyclerView);
                         if(firebaseBestStories == null){
                             firebaseBestStories = firebase.child(StoryType.BESTSTORIES);
 
@@ -253,7 +270,8 @@ public class PostListActivity extends AppCompatActivity {
                         drawerLayout.closeDrawers();
                         currentStoryType = StoryType.JOBSTORIES;
                         swipeRefreshLayout.setRefreshing(true);
-                        setupRecyclerViewAdapter(recyclerView, data.jobStoryItems);
+                        copyToDataItemsArray(data.jobStoryItems);
+                        setupRecyclerViewAdapter(recyclerView);
                         if(firebaseJobStories == null){
                             firebaseJobStories = firebase.child(StoryType.JOBSTORIES);
                             getData(firebaseJobStories,  StoryType.JOBSTORIES);
@@ -314,7 +332,6 @@ public class PostListActivity extends AppCompatActivity {
         actionBarDrawerToggle.syncState();
 
     }
-
 
     private void getData(Firebase firebase,final String child){
         Log.d("getData()", child);
@@ -404,7 +421,7 @@ public class PostListActivity extends AppCompatActivity {
             Items newItem = new Items();
             newItem.id = id;
             data.addItem(storyType, position, newItem);
-            setupRecyclerViewAdapter(recyclerView, new ArrayList<Items>());
+            //setupRecyclerViewAdapter(recyclerView);
         }
         firebaseItem.addValueEventListener(new ValueEventListener() {
             @Override
@@ -465,6 +482,9 @@ public class PostListActivity extends AppCompatActivity {
                 }
 
                 if(prevPosition == position){
+                    if(storyType.equals(currentStoryType)){
+                        dataItemsArray.add(position, item);
+                    }
                     data.setItem(storyType, position, item);
                     if(isNewItem){
                         itemRecyclerViewAdapter.notifyItemInserted(position);
@@ -472,13 +492,17 @@ public class PostListActivity extends AppCompatActivity {
                         itemRecyclerViewAdapter.notifyItemChanged(position);
                     }
                 } else{
+                    if(storyType.equals(currentStoryType)){
+                        dataItemsArray.add(prevPosition, item);
+                    }
                     data.setItem(storyType, prevPosition, item);
+
                     itemRecyclerViewAdapter.notifyItemChanged(prevPosition);
                 }
 
                 Data.items.put(item.id, item);
 
-                setupRecyclerViewAdapter(recyclerView, data.getAllItems(storyType));
+                //setupRecyclerViewAdapter(recyclerView);
 
                 if(swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
@@ -549,7 +573,7 @@ public class PostListActivity extends AppCompatActivity {
             if(holder.mItem.by != null)
                 holder.by.setText(mValues.get(position).by);
             if(holder.mItem.text != null)
-                holder.text.setText(Html.escapeHtml(mValues.get(position).text));
+                holder.text.setText(Html.fromHtml(mValues.get(position).text));
             if(holder.text.getText().length() < 2){
                 TextView textView = (TextView) holder.mView.findViewById(R.id.text);
                 textView.setVisibility(View.GONE);
@@ -575,6 +599,7 @@ public class PostListActivity extends AppCompatActivity {
                         }
                     });
 
+                    /*
                     HtmlFetcher fetcher = new HtmlFetcher();
                     // set cache. e.g. take the map implementation from google collections:
                     // fetcher.setCache(new MapMaker().concurrencyLevel(20).maximumSize(count).
@@ -600,9 +625,7 @@ public class PostListActivity extends AppCompatActivity {
 
                     } catch (Exception e){
                         e.printStackTrace();
-                    }
-
-
+                    }*/
 
                 } catch(URISyntaxException e){
 
