@@ -569,8 +569,9 @@ public class PostListActivity extends AppCompatActivity {
                     postLinkLinearLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(holder.mItem.url));
-                            startActivity(browserIntent);
+                            Intent intent = new Intent(PostListActivity.this, WebViewActivity.class);
+                            intent.putExtra("url", holder.mItem.url);
+                            startActivity(intent);
                         }
                     });
 
