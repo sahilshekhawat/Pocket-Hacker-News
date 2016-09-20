@@ -11,9 +11,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.Window;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import io.github.sahilshekhawat.pockethackernews.R;
 
@@ -27,9 +31,21 @@ public class WebViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_view);
 
+
         //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
         //toolbar.setTitle(getTitle());
+
+        url = getIntent().getStringExtra("url");
+
+        Window w = getWindow();
+        try{
+            URI uri = new URI(url);
+            String domain = uri.getHost();
+            w.setTitle(domain);
+        } catch(URISyntaxException e){
+            e.printStackTrace();
+        }
 
         mWebview = (WebView) findViewById(R.id.webview);
         /*mWebview.getSettings().setJavaScriptEnabled(true);
@@ -38,9 +54,10 @@ public class WebViewActivity extends AppCompatActivity {
             String url = getIntent().getStringExtra("url");
             mWebview.loadUrl(url);
         }*/
-        url = getIntent().getStringExtra("url");
+
 
         final ProgressDialog pd = ProgressDialog.show(WebViewActivity.this, "", "Loading...", true);
+        pd.setCancelable(true);
 
         mWebview.getSettings().setJavaScriptEnabled(true); // enable javascript
         mWebview.getSettings().setLoadWithOverviewMode(true);

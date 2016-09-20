@@ -27,6 +27,7 @@
                 android:title="Jobs"
                 android:icon="@drawable/ic_account_balance_wallet_black_48dp"/>
 
+            <!--
             <item
                 android:id="@+id/bookmarks"
                 android:title="Bookmarks"
@@ -35,6 +36,7 @@
                 android:id="@+id/settings"
                 android:title="Settings"
                 android:icon="@drawable/ic_settings_white_48dp"/>
+            -->
             <item
                 android:id="@+id/feedback"
                 android:title="Feedback"

@@ -145,5 +145,26 @@ public class Data {
         return -1;
     }
 
+    public void removeItem(String storyType, int position){
+        if(storyType.equals(StoryType.TOPSTORIES)){
+            topStoryItems.remove(position);
+        }
+        if(storyType.equals(StoryType.NEWSTORIES)){
+            newStoryItems.remove(position);
+        }
+        if(storyType.equals(StoryType.BESTSTORIES)){
+            bestStoryItems.remove(position);
+        }
+        if(storyType.equals(StoryType.ASKSTORIES)){
+            askStoryItems.remove(position);
+        }
+        if(storyType.equals(StoryType.SHOWSTORIES)){
+            showStoryItems.remove(position);
+        }
+        if(storyType.equals(StoryType.JOBSTORIES)){
+            jobStoryItems.remove(position);
+        }
+    }
+
 
 }

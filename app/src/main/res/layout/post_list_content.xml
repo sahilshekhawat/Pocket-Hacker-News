@@ -138,6 +138,7 @@
             android:paddingTop="15dp">
 
             <ImageView
+                android:id="@+id/points_icon"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_gravity="right"
@@ -162,6 +163,7 @@
                 android:layout_marginRight="15dp">
 
                 <ImageView
+                    android:id="@+id/comment_icon"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:src="@drawable/ic_comment_black_48dp"

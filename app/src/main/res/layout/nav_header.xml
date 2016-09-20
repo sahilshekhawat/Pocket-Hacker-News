@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/nav_header_height"
-    android:background="@color/colorPrimary"
+    android:background="@drawable/hacker_news_default_background"
     android:paddingBottom="@dimen/nav_header_vertical_spacing"
     android:paddingLeft="@dimen/nav_header_vertical_spacing"
     android:paddingRight="@dimen/nav_header_vertical_spacing"
@@ -12,43 +12,43 @@
     android:id="@+id/nav_header_layout"
     android:clickable="true">
 
-    <ImageView
-        android:id="@+id/nav_head_avatar"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="25dp"
-        android:src="@drawable/avatar_circular"/>
+    <!--<ImageView-->
+        <!--android:id="@+id/nav_head_avatar"-->
+        <!--android:layout_width="60dp"-->
+        <!--android:layout_height="60dp"-->
+        <!--android:layout_marginTop="25dp"-->
+        <!--android:src="@drawable/avatar_circular"/>-->
 
-    <TextView
-        android:id="@+id/nav_head_appname"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="18dp"
-        android:textSize="14sp"
-        android:text="Sahil Shekhawat"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:layout_alignParentLeft="true"
-        android:layout_above="@+id/nav_head_username"/>
+    <!--<TextView-->
+        <!--android:id="@+id/nav_head_appname"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:paddingTop="18dp"-->
+        <!--android:textSize="14sp"-->
+        <!--android:text="Sahil Shekhawat"-->
+        <!--android:textAppearance="@style/TextAppearance.AppCompat.Body1"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_above="@+id/nav_head_username"/>-->
 
-    <TextView
-        android:id="@+id/nav_head_username"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="sahilshekhawat01@gmail.com"
-        android:textSize="14sp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"/>
+    <!--<TextView-->
+        <!--android:id="@+id/nav_head_username"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="sahilshekhawat01@gmail.com"-->
+        <!--android:textSize="14sp"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentLeft="true"/>-->
 
-    <ToggleButton
-        android:id="@+id/account_view_icon_button"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_gravity="center"
-        android:background="@drawable/toggle_expand_collapse"
-        android:textOff="@null"
-        android:textOn="@null"/>
+    <!--<ToggleButton-->
+        <!--android:id="@+id/account_view_icon_button"-->
+        <!--android:layout_width="24dp"-->
+        <!--android:layout_height="24dp"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:background="@drawable/toggle_expand_collapse"-->
+        <!--android:textOff="@null"-->
+        <!--android:textOn="@null"/>-->
 
 </RelativeLayout>
