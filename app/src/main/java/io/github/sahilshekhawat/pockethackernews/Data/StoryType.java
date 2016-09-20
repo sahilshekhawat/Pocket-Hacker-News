@@ -9,5 +9,6 @@ public final class StoryType {
     public static final String BESTSTORIES = "beststories";
     public static final String ASKSTORIES = "askstories";
     public static final String SHOWSTORIES = "showstories";
+    public static final String JOBSTORIES = "jobstories";
     public static final String ITEM = "item";
 }

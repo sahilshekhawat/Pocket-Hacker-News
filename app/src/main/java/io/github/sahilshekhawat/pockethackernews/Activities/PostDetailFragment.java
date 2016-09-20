@@ -48,8 +48,6 @@ public class PostDetailFragment extends Fragment {
             // arguments. In a real-world scenario, use a Loader
             // to load content from a content provider.
             mItem = Data.items.get(Long.parseLong(getArguments().getString(ARG_ITEM_ID)));
-            System.out.println("@#@@@@@@@@@@@@@@@@@@@@@@22");
-            System.out.println(mItem);
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {

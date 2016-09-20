@@ -13,24 +13,55 @@
 
     <LinearLayout
         android:id="@+id/post_title"
-        android:paddingBottom="20dp"
+        android:paddingBottom="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/title"
-            android:text="Consistency is Consistently Undervalued"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:id="@+id/by"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:textColor="@color/secondaryText"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="10dp"
+                android:textAppearance="?attr/textAppearanceListItem" />
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:textSize="10sp"
+                android:layout_marginRight="15dp"
+                android:textColor="@color/secondaryText"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
             android:textAppearance="?attr/textAppearanceListItem" />
 
         <TextView
             android:id="@+id/text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
+            android:textSize="12sp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginRight="15dp"
             android:textAppearance="?attr/textAppearanceListItem" />
 
         <LinearLayout
@@ -51,45 +82,104 @@
                 android:src="@drawable/default_post_image"/>
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/urlTitle"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/text_margin"
-                android:text="google.com"
-                android:textSize="13sp"
-                android:textColor="@color/Blue"
-                android:textAppearance="?attr/textAppearanceListItem" />
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="10dp"
+                android:visibility="gone"
+                android:textSize="13sp"/>
+
+            <TextView
+                android:id="@+id/urlText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:visibility="gone"
+                android:layout_marginTop="10dp"
+                android:textSize="11sp"/>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/url"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/text_margin"
+                    android:textSize="13sp"
+                    android:textColor="@color/Blue"
+                    android:textAppearance="?attr/textAppearanceListItem" />
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_alignParentRight="true"
+                    android:tint="@color/Blue"
+                    android:src="@drawable/ic_link_black_48dp"
+                    android:layout_margin="@dimen/text_margin"/>
+            </RelativeLayout>
+
+
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/score"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
-            android:textAppearance="?attr/textAppearanceListItem" />
+            android:orientation="horizontal"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_gravity="left"
+            android:paddingTop="15dp">
 
-        <TextView
-            android:id="@+id/time"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
-            android:textAppearance="?attr/textAppearanceListItem" />
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="right"
+                android:tint="@color/secondaryText"
+                android:rotation="270"
+                android:src="@drawable/ic_play_arrow_black_48dp"/>
 
+            <TextView
+                android:id="@+id/score"
+                android:textSize="15sp"
+                android:textColor="@color/secondaryText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_margin="5dp"
+                android:textAppearance="?attr/textAppearanceListItem" />
 
-        <TextView
-            android:id="@+id/by"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
-            android:textAppearance="?attr/textAppearanceListItem" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:layout_marginRight="15dp">
 
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_comment_black_48dp"
+                    android:tint="@color/secondaryText"/>
 
-        <TextView
-            android:id="@+id/numKids"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"
-            android:textAppearance="?attr/textAppearanceListItem" />
+                <TextView
+                    android:id="@+id/numKids"
+                    android:textSize="15sp"
+                    android:textColor="@color/secondaryText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:textAppearance="?attr/textAppearanceListItem" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
     </LinearLayout>
 
 
