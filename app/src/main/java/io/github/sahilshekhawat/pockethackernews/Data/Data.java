@@ -51,6 +51,27 @@ public class Data {
         }
     }
 
+    public void addItem(String storyType, Items item){
+        if(storyType.equals(StoryType.TOPSTORIES)){
+            topStoryItems.add(item);
+        }
+        if(storyType.equals(StoryType.NEWSTORIES)){
+            newStoryItems.add(item);
+        }
+        if(storyType.equals(StoryType.BESTSTORIES)){
+            bestStoryItems.add(item);
+        }
+        if(storyType.equals(StoryType.ASKSTORIES)){
+            askStoryItems.add(item);
+        }
+        if(storyType.equals(StoryType.SHOWSTORIES)){
+            showStoryItems.add(item);
+        }
+        if(storyType.equals(StoryType.JOBSTORIES)){
+            jobStoryItems.add(item);
+        }
+    }
+
     public void setItem(String storyType, int position, Items item){
         if(storyType.equals(StoryType.TOPSTORIES)){
             topStoryItems.set(position, item);
@@ -114,6 +135,50 @@ public class Data {
         }
         return null;
     }
+
+    public ArrayList<Long> getAllStories(String storyType){
+        if(storyType.equals(StoryType.TOPSTORIES)){
+            return topStories;
+        }
+        if(storyType.equals(StoryType.NEWSTORIES)){
+            return newStories;
+        }
+        if(storyType.equals(StoryType.BESTSTORIES)){
+            return bestStories;
+        }
+        if(storyType.equals(StoryType.ASKSTORIES)){
+            return askStories;
+        }
+        if(storyType.equals(StoryType.SHOWSTORIES)){
+            return showStories;
+        }
+        if(storyType.equals(StoryType.JOBSTORIES)){
+            return jobStories;
+        }
+        return null;
+    }
+
+    public void setAllItems(String storyType, ArrayList<Items> newItems){
+        if(storyType.equals(StoryType.TOPSTORIES)){
+            topStoryItems = newItems;
+        }
+        if(storyType.equals(StoryType.NEWSTORIES)){
+            newStoryItems = newItems;
+        }
+        if(storyType.equals(StoryType.BESTSTORIES)){
+            bestStoryItems = newItems;
+        }
+        if(storyType.equals(StoryType.ASKSTORIES)){
+            askStoryItems = newItems;
+        }
+        if(storyType.equals(StoryType.SHOWSTORIES)){
+            showStoryItems = newItems;
+        }
+        if(storyType.equals(StoryType.JOBSTORIES)){
+            jobStoryItems = newItems;
+        }
+    }
+
 
 
 

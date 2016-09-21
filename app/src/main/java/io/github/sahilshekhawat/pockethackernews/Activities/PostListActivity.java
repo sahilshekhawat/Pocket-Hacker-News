@@ -1,8 +1,10 @@
 package io.github.sahilshekhawat.pockethackernews.Activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.IntegerRes;
 import android.support.annotation.NonNull;
@@ -84,6 +86,7 @@ public class PostListActivity extends AppCompatActivity {
     ItemRecyclerViewAdapter itemRecyclerViewAdapter;
     String currentStoryType;
     SwipeRefreshLayout swipeRefreshLayout;
+    private final Object lock = new Object();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +106,6 @@ public class PostListActivity extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 refreshContent();
-                itemRecyclerViewAdapter.notifyDataSetChanged();
             }
         });
 
@@ -160,15 +162,29 @@ public class PostListActivity extends AppCompatActivity {
     }
 
     private void refreshContent(){
-        swipeRefreshLayout.setRefreshing(true);
-        getItemsForType(currentStoryType);
+        Log.d("refreshContent()", "called!");
+        if(!swipeRefreshLayout.isRefreshing()){
+            swipeRefreshLayout.setRefreshing(true);
+        }
+        //Remove all previous items.
+        data.setAllItems(currentStoryType, new ArrayList<Items>());
+        //All all items order wise, skip if not present.
+        ArrayList<Long> stories = data.getAllStories(currentStoryType);
+        for(Long id: stories){
+            if(Data.items.get(id) != null){
+                data.addItem(currentStoryType, Data.items.get(id));
+            }
+        }
+        setupRecyclerViewAdapter(recyclerView, data.getAllItems(currentStoryType));
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     public void initNavigationDrawer() {
 
         navigationView.setCheckedItem(R.id.top);
-        if(firebaseTopStories == null)
+        if(firebaseTopStories == null) {
             firebaseTopStories = firebase.child(StoryType.TOPSTORIES);
+        }
         currentStoryType = StoryType.TOPSTORIES;
         swipeRefreshLayout.setRefreshing(true);
         setupRecyclerViewAdapter(recyclerView, data.topStoryItems);
@@ -246,7 +262,6 @@ public class PostListActivity extends AppCompatActivity {
                         setupRecyclerViewAdapter(recyclerView, data.bestStoryItems);
                         if(firebaseBestStories == null){
                             firebaseBestStories = firebase.child(StoryType.BESTSTORIES);
-
                             getData(firebaseBestStories,  StoryType.BESTSTORIES);
                         } else{
                             getItemsForType(StoryType.BESTSTORIES);
@@ -345,9 +360,12 @@ public class PostListActivity extends AppCompatActivity {
                     data.bestStories = (ArrayList<Long>)dataSnapshot.getValue();
                     getItemsForType(StoryType.BESTSTORIES);
                 }
+                if(child.equals(StoryType.JOBSTORIES)) {
+                    data.jobStories = (ArrayList<Long>)dataSnapshot.getValue();
+                    getItemsForType(StoryType.JOBSTORIES);
+                }
 
             }
-
             @Override
             public void onCancelled(FirebaseError firebaseError) {
                 System.out.println("Read Failed with error: " + firebaseError.getMessage());
@@ -379,15 +397,21 @@ public class PostListActivity extends AppCompatActivity {
             stories = data.askStories;
             //storiesItems = data.askStoryItems;
         }
+        if(storyType.equals(StoryType.JOBSTORIES)) {
+            stories = data.jobStories;
+        }
 
         Log.d("getItemsForType()", Integer.toString(stories.size()));
 
         for(Integer i = 0; i<stories.size(); i++  ){
             Long id = stories.get(i);
-            if(data.itemContains(storyType, id) == -1){
-                getItem(id, storyType, i);
-            } else{
+            if(i == stories.size() - 1){
                 Log.d("getItemsForType()", "Done:)");
+            }
+            if(Data.items.get(id) == null){
+                System.out.print(Integer.toString(i) + ",");
+                getItem(id, storyType, i, stories.size());
+            } else{
                 if(swipeRefreshLayout.isRefreshing()) {
                     swipeRefreshLayout.setRefreshing(false);
                 }
@@ -396,18 +420,19 @@ public class PostListActivity extends AppCompatActivity {
         }
     }
 
-    private void getItem(final Long id, final String storyType, final int position){
-        //Log.d("getItem()", Integer.toString(position));
+    private void getItem(final Long id, final String storyType, final int position, final int storySize){
+        //
         Firebase firebaseItem = firebaseItems.child(Long.toString(id));
-        ArrayList<Items> tmp = new ArrayList<>();
-        Items newItem = new Items();
-        newItem.id = id;
-        data.addItem(storyType, position, newItem);
+//        ArrayList<Items> tmp = new ArrayList<>();
+//        Items newItem = new Items();
+//        newItem.id = id;
+//        data.addItem(storyType, position, newItem);
 
         firebaseItem.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //System.out.println(dataSnapshot.getValue());
+                Log.d("getItem()", storyType + " " + Integer.toString(position));
                 Items item = new Items();
 //                HashMap<String, Object> dataSnapshotValue = (HashMap<String, Object>) dataSnapshot.getValue();
 
@@ -447,43 +472,14 @@ public class PostListActivity extends AppCompatActivity {
                     item.setUrl((String) dataSnapshot.child("url").getValue());
                 }
 
-                int prevPosition = data.itemContains(storyType, id);
-                boolean isNewItem = false;
-//                if(prevPosition == -1) {
-//                    Log.d("getItems()", "######################################################");
-//                    Items newItem = new Items();
-//                    newItem.id = id;
-//                    data.addItem(storyType, position, newItem);
-//                    prevPosition = position;
-//
-//                }
-
-                if(data.getItem(storyType, position).getBy() == null){
-                    isNewItem = true;
-                }
-
-                if(prevPosition == position || prevPosition == -1){
-                    data.setItem(storyType, position, item);
-                    if(isNewItem){
-                        itemRecyclerViewAdapter.notifyItemInserted(position);
-                    } else{
-                        itemRecyclerViewAdapter.notifyItemChanged(position);
-                    }
-                } else{
-                    data.removeItem(storyType, prevPosition);
-                    itemRecyclerViewAdapter.notifyItemRemoved(prevPosition);
-                    data.setItem(storyType, position, item);
-                    itemRecyclerViewAdapter.notifyItemChanged(position);
-                }
-
                 Data.items.put(item.id, item);
-
-                //setupRecyclerViewAdapter(recyclerView, data.getAllItems(storyType));
-
-                if(swipeRefreshLayout.isRefreshing()) {
-                    swipeRefreshLayout.setRefreshing(false);
+                if(position + 1 == storySize){
+                    if(swipeRefreshLayout.isRefreshing()) {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                    refreshContent();
                 }
-                //data.items[id] = ()
+                //new AddingDataInAsyncTask().execute(item, storyType, position);
             }
 
             @Override
@@ -492,6 +488,85 @@ public class PostListActivity extends AppCompatActivity {
             }
         });
     }
+
+    private class BackgroundReturnClass {
+        public int position;
+        public int prevPosition;
+        public boolean newItem;
+        public String storyType;
+
+        public BackgroundReturnClass(int position, int prevPosition, boolean newItem, String storyType) {
+            this.position = position;
+            this.prevPosition = prevPosition;
+            this.newItem = newItem;
+            this.storyType = storyType;
+        }
+    }
+
+    //Adding data in background
+    public class AddingDataInAsyncTask extends AsyncTask<Object, Void, BackgroundReturnClass> {
+        @Override
+        protected BackgroundReturnClass doInBackground(Object... params) {
+            Items item = (Items) params[0];
+            String storyType = (String) params[1];
+            Integer position = (Integer) params[2];
+
+            while(data.getAllItems(storyType).size() < position){
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e){
+                    continue;
+                }
+            }
+
+            int prevPosition = data.itemContains(storyType, item.id);
+            boolean isNewItem = false;
+
+            if(prevPosition == -1){
+                isNewItem = true;
+            }
+
+            if (prevPosition == position || prevPosition == -1) {
+                data.addItem(storyType, position, item);
+
+            } else {
+                data.removeItem(storyType, prevPosition);
+                data.addItem(storyType, position, item);
+
+            }
+            return new BackgroundReturnClass(position, prevPosition, isNewItem, storyType);
+        }
+
+        @Override
+        protected void onPostExecute(BackgroundReturnClass backgroundReturnClass) {
+            super.onPostExecute(backgroundReturnClass);
+            if(swipeRefreshLayout.isRefreshing()) {
+                swipeRefreshLayout.setRefreshing(false);
+            }
+            int position = backgroundReturnClass.position;
+            int prevPosition = backgroundReturnClass.prevPosition;
+            boolean isNewItem = backgroundReturnClass.newItem;
+            String storyType = backgroundReturnClass.storyType;
+
+            if(prevPosition == position || prevPosition == -1) {
+                if (storyType.equals(currentStoryType)) {
+                    if (isNewItem) {
+                        itemRecyclerViewAdapter.notifyItemInserted(position);
+                    } else {
+                        itemRecyclerViewAdapter.notifyItemChanged(position);
+                    }
+                }
+            } else{
+                if (storyType.equals(currentStoryType)) {
+                    itemRecyclerViewAdapter.notifyItemRemoved(prevPosition);
+                    itemRecyclerViewAdapter.notifyItemChanged(position);
+                }
+            }
+
+        }
+    }
+
+
 
 
     public class ItemRecyclerViewAdapter
