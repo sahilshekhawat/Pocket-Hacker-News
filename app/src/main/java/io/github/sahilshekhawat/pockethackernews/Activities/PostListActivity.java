@@ -403,19 +403,22 @@ public class PostListActivity extends AppCompatActivity {
 
         Log.d("getItemsForType()", Integer.toString(stories.size()));
 
-        for(Integer i = 0; i<stories.size(); i++  ){
+        int lastPosition = 0;
+        for(Integer i = 0; i<stories.size(); i++  ) {
             Long id = stories.get(i);
-            if(i == stories.size() - 1){
+            if (Data.items.get(id) == null) {
+                lastPosition = i;
+            }
+        }
+
+        for(Integer i = 0; i<stories.size(); i++  ) {
+            Long id = stories.get(i);
+            if (i == stories.size() - 1) {
                 Log.d("getItemsForType()", "Done:)");
             }
-            if(Data.items.get(id) == null){
+            if (Data.items.get(id) == null) {
                 System.out.print(Integer.toString(i) + ",");
-                getItem(id, storyType, i, stories.size());
-            } else{
-                if(swipeRefreshLayout.isRefreshing()) {
-                    swipeRefreshLayout.setRefreshing(false);
-                }
-                break;
+                getItem(id, storyType, i, lastPosition);
             }
         }
     }
