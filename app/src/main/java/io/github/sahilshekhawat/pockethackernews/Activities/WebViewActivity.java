@@ -2,6 +2,7 @@ package io.github.sahilshekhawat.pockethackernews.Activities;
 
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -58,6 +59,13 @@ public class WebViewActivity extends AppCompatActivity {
 
         final ProgressDialog pd = ProgressDialog.show(WebViewActivity.this, "", "Loading...", true);
         pd.setCancelable(true);
+
+        pd.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                onBackPressed();
+            }
+        });
 
         mWebview.getSettings().setJavaScriptEnabled(true); // enable javascript
         mWebview.getSettings().setLoadWithOverviewMode(true);

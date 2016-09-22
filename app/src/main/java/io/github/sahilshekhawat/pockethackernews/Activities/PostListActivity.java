@@ -37,8 +37,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import de.jetwick.snacktory.HtmlFetcher;
-import de.jetwick.snacktory.JResult;
 import io.github.sahilshekhawat.pockethackernews.Data.Data;
 import io.github.sahilshekhawat.pockethackernews.Data.Items;
 import io.github.sahilshekhawat.pockethackernews.Data.StoryType;
@@ -199,9 +197,10 @@ public class PostListActivity extends AppCompatActivity {
                         //Toast.makeText(getApplicationContext(),"Top",Toast.LENGTH_SHORT).show();
                         drawerLayout.closeDrawers();
                         currentStoryType = StoryType.TOPSTORIES;
-                        swipeRefreshLayout.setRefreshing(true);
+                        //swipeRefreshLayout.setRefreshing(true);
                         setupRecyclerViewAdapter(recyclerView, data.topStoryItems);
                         if(firebaseTopStories == null){
+                            swipeRefreshLayout.setRefreshing(true);
                             firebaseTopStories = firebase.child(StoryType.TOPSTORIES);
                             getData(firebaseTopStories, StoryType.TOPSTORIES);
                         } else{
@@ -214,9 +213,10 @@ public class PostListActivity extends AppCompatActivity {
                         //Toast.makeText(getApplicationContext(),"New",Toast.LENGTH_SHORT).show();
                         drawerLayout.closeDrawers();
                         currentStoryType = StoryType.NEWSTORIES;
-                        swipeRefreshLayout.setRefreshing(true);
+                        //swipeRefreshLayout.setRefreshing(true);
                         setupRecyclerViewAdapter(recyclerView, data.newStoryItems);
                         if(firebaseNewStories == null){
+                            swipeRefreshLayout.setRefreshing(true);
                             firebaseNewStories = firebase.child(StoryType.NEWSTORIES);
                             getData(firebaseNewStories, StoryType.NEWSTORIES);
                         } else{
@@ -228,9 +228,10 @@ public class PostListActivity extends AppCompatActivity {
                         //Toast.makeText(getApplicationContext(),"Ask HN",Toast.LENGTH_SHORT).show();
                         drawerLayout.closeDrawers();
                         currentStoryType = StoryType.ASKSTORIES;
-                        swipeRefreshLayout.setRefreshing(true);
+                        //swipeRefreshLayout.setRefreshing(true);
                         setupRecyclerViewAdapter(recyclerView, data.askStoryItems);
                         if(firebaseAskStories == null){
+                            swipeRefreshLayout.setRefreshing(true);
                             firebaseAskStories = firebase.child(StoryType.ASKSTORIES);
                             getData(firebaseAskStories, StoryType.ASKSTORIES);
 
@@ -243,11 +244,11 @@ public class PostListActivity extends AppCompatActivity {
                         //Toast.makeText(getApplicationContext(),"Show HN",Toast.LENGTH_SHORT).show();
                         drawerLayout.closeDrawers();
                         currentStoryType = StoryType.SHOWSTORIES;
-                        swipeRefreshLayout.setRefreshing(true);
+                        //swipeRefreshLayout.setRefreshing(true);
                         setupRecyclerViewAdapter(recyclerView, data.showStoryItems);
                         if(firebaseShowStories == null){
+                            swipeRefreshLayout.setRefreshing(true);
                             firebaseShowStories = firebase.child(StoryType.SHOWSTORIES);
-
                             getData(firebaseShowStories, StoryType.SHOWSTORIES);
                         } else{
                             getItemsForType(StoryType.SHOWSTORIES);
@@ -258,9 +259,10 @@ public class PostListActivity extends AppCompatActivity {
                         //Toast.makeText(getApplicationContext(),"Popular",Toast.LENGTH_SHORT).show();
                         drawerLayout.closeDrawers();
                         currentStoryType = StoryType.BESTSTORIES;
-                        swipeRefreshLayout.setRefreshing(true);
+                        //swipeRefreshLayout.setRefreshing(true);
                         setupRecyclerViewAdapter(recyclerView, data.bestStoryItems);
                         if(firebaseBestStories == null){
+                            swipeRefreshLayout.setRefreshing(true);
                             firebaseBestStories = firebase.child(StoryType.BESTSTORIES);
                             getData(firebaseBestStories,  StoryType.BESTSTORIES);
                         } else{
@@ -270,9 +272,10 @@ public class PostListActivity extends AppCompatActivity {
                     case R.id.jobs:
                         drawerLayout.closeDrawers();
                         currentStoryType = StoryType.JOBSTORIES;
-                        swipeRefreshLayout.setRefreshing(true);
+                        //
                         setupRecyclerViewAdapter(recyclerView, data.jobStoryItems);
                         if(firebaseJobStories == null){
+                            swipeRefreshLayout.setRefreshing(true);
                             firebaseJobStories = firebase.child(StoryType.JOBSTORIES);
                             getData(firebaseJobStories,  StoryType.JOBSTORIES);
                         } else{
@@ -475,14 +478,16 @@ public class PostListActivity extends AppCompatActivity {
                     item.setUrl((String) dataSnapshot.child("url").getValue());
                 }
 
+                boolean isNewItem = false;
+
+                if(Data.items.get(item.id) == null){
+                    isNewItem = true;
+                }
+
                 Data.items.put(item.id, item);
-                if(position + 1 == storySize){
-                    if(swipeRefreshLayout.isRefreshing()) {
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
+                if(isNewItem && position == storySize){
                     refreshContent();
                 }
-                //new AddingDataInAsyncTask().execute(item, storyType, position);
             }
 
             @Override
@@ -491,85 +496,6 @@ public class PostListActivity extends AppCompatActivity {
             }
         });
     }
-
-    private class BackgroundReturnClass {
-        public int position;
-        public int prevPosition;
-        public boolean newItem;
-        public String storyType;
-
-        public BackgroundReturnClass(int position, int prevPosition, boolean newItem, String storyType) {
-            this.position = position;
-            this.prevPosition = prevPosition;
-            this.newItem = newItem;
-            this.storyType = storyType;
-        }
-    }
-
-    //Adding data in background
-    public class AddingDataInAsyncTask extends AsyncTask<Object, Void, BackgroundReturnClass> {
-        @Override
-        protected BackgroundReturnClass doInBackground(Object... params) {
-            Items item = (Items) params[0];
-            String storyType = (String) params[1];
-            Integer position = (Integer) params[2];
-
-            while(data.getAllItems(storyType).size() < position){
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e){
-                    continue;
-                }
-            }
-
-            int prevPosition = data.itemContains(storyType, item.id);
-            boolean isNewItem = false;
-
-            if(prevPosition == -1){
-                isNewItem = true;
-            }
-
-            if (prevPosition == position || prevPosition == -1) {
-                data.addItem(storyType, position, item);
-
-            } else {
-                data.removeItem(storyType, prevPosition);
-                data.addItem(storyType, position, item);
-
-            }
-            return new BackgroundReturnClass(position, prevPosition, isNewItem, storyType);
-        }
-
-        @Override
-        protected void onPostExecute(BackgroundReturnClass backgroundReturnClass) {
-            super.onPostExecute(backgroundReturnClass);
-            if(swipeRefreshLayout.isRefreshing()) {
-                swipeRefreshLayout.setRefreshing(false);
-            }
-            int position = backgroundReturnClass.position;
-            int prevPosition = backgroundReturnClass.prevPosition;
-            boolean isNewItem = backgroundReturnClass.newItem;
-            String storyType = backgroundReturnClass.storyType;
-
-            if(prevPosition == position || prevPosition == -1) {
-                if (storyType.equals(currentStoryType)) {
-                    if (isNewItem) {
-                        itemRecyclerViewAdapter.notifyItemInserted(position);
-                    } else {
-                        itemRecyclerViewAdapter.notifyItemChanged(position);
-                    }
-                }
-            } else{
-                if (storyType.equals(currentStoryType)) {
-                    itemRecyclerViewAdapter.notifyItemRemoved(prevPosition);
-                    itemRecyclerViewAdapter.notifyItemChanged(position);
-                }
-            }
-
-        }
-    }
-
-
 
 
     public class ItemRecyclerViewAdapter

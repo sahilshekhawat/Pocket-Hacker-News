@@ -22,6 +22,11 @@ public class Items {
     public ArrayList<Long> parts = null;
     public Long descendants = null;
 
+    //Snacktory data
+    public String articleTitle = null;
+    public String articleText = null;
+    public String articleImageURL = null;
+
     public Items(){
     }
 
@@ -56,6 +61,30 @@ public class Items {
             this.type = ItemType.POLL;
         if(type.equals("pollopt"))
             this.type = ItemType.POLLOPT;
+    }
+
+    public String getArticleTitle() {
+        return articleTitle;
+    }
+
+    public void setArticleTitle(String articleTitle) {
+        this.articleTitle = articleTitle;
+    }
+
+    public String getArticleText() {
+        return articleText;
+    }
+
+    public void setArticleText(String articleText) {
+        this.articleText = articleText;
+    }
+
+    public String getArticleImageURL() {
+        return articleImageURL;
+    }
+
+    public void setArticleImageURL(String articleImageURL) {
+        this.articleImageURL = articleImageURL;
     }
 
     public Long getTime() {
