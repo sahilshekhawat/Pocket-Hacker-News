@@ -3,6 +3,8 @@ package io.github.sahilshekhawat.pockethackernews.Activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -23,6 +25,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,10 +35,15 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import io.github.sahilshekhawat.pockethackernews.Data.Data;
 import io.github.sahilshekhawat.pockethackernews.Data.Items;
@@ -45,8 +53,10 @@ import io.github.sahilshekhawat.pockethackernews.dummy.DummyContent;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -479,9 +489,12 @@ public class PostListActivity extends AppCompatActivity {
                 }
 
                 boolean isNewItem = false;
-
-                if(Data.items.get(item.id) == null){
+                Items prevItem = Data.items.get(item.id);
+                if(prevItem == null) {
                     isNewItem = true;
+                    new ArticleMetaTagParser().execute(id);
+                } else if(prevItem.articleTitle == null){
+                    new ArticleMetaTagParser().execute(id);
                 }
 
                 Data.items.put(item.id, item);
@@ -495,6 +508,80 @@ public class PostListActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private String getTitle(Document doc){
+        Elements titleTags = doc.select("title");
+        if(titleTags != null && titleTags.size() > 0){
+            return titleTags.get(0).text();
+        } else{
+            Elements metaTags = doc.select("meta");
+            for(Element meta: metaTags){
+                if(meta.attr("name").toLowerCase().contains("title")){
+                    return meta.attr("content");
+                }
+            }
+
+        }
+        return null;
+    }
+
+    private String getThumbnail(Document doc){
+        Elements metaTags = doc.select("meta");
+        for(Element meta: metaTags){
+            if(meta.attr("name").toLowerCase().contains("image")){
+                return meta.attr("content");
+            }
+        }
+        return null;
+    }
+
+    private String getDescription(Document doc){
+        Elements metaTags = doc.select("meta");
+        for(Element meta: metaTags){
+            if(meta.attr("name").toLowerCase().contains("description")){
+                return meta.attr("content");
+            }
+        }
+        return null;
+    }
+
+
+    private class ArticleMetaTagParser extends AsyncTask<Long, Void, Long> {
+        @Override
+        protected Long doInBackground(Long... longs) {
+            Long id = longs[0];
+            Items item = Data.items.get(id);
+            try {
+                Document doc = Jsoup.connect(item.url).ignoreContentType(true).get();
+                String title = getTitle(doc);
+                String image = getThumbnail(doc);
+                String text = getDescription(doc);
+                item.articleTitle = title;
+                item.articleImageURL = image;
+                item.articleText = text;
+                Data.items.put(id, item);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return id;
+        }
+
+        @Override
+        protected void onPostExecute(Long id) {
+            super.onPostExecute(id);
+
+            int position = data.itemContains(currentStoryType, id);
+            if(position != -1){
+                itemRecyclerViewAdapter.notifyItemChanged(position);
+            }
+
+            Items item = Data.items.get(id);
+//            if(item != null && item.articleImageURL != null) {
+//                UrlImageViewHelper.loadUrlDrawable(PostListActivity.this, item.articleImageURL);
+//            }
+        }
     }
 
 
@@ -586,37 +673,32 @@ public class PostListActivity extends AppCompatActivity {
                         }
                     });
 
-                    /*HtmlFetcher fetcher = new HtmlFetcher();
-                    // set cache. e.g. take the map implementation from google collections:
-                    // fetcher.setCache(new MapMaker().concurrencyLevel(20).maximumSize(count).
-                    //    expireAfterWrite(minutes, TimeUnit.MINUTES).makeMap();
+                    TextView urlTitleTextView = (TextView)holder.mView.findViewById(R.id.urlTitle);
+                    TextView urlTextTextView = (TextView)holder.mView.findViewById(R.id.urlText);
+                    ImageView urlImageView = (ImageView) holder.mView.findViewById(R.id.urlImage);
+                    if(holder.mItem.articleTitle != null){
+                        urlTitleTextView.setVisibility(View.VISIBLE);
+                        urlTitleTextView.setText(holder.mItem.articleTitle);
+                    } else{
+                        urlTitleTextView.setVisibility(View.GONE);
+                    }
 
-                    try{
-                        JResult res = fetcher.fetchAndExtract(holder.mItem.url, 5000, true);
-                        String text = res.getText();
-                        String title = res.getTitle();
-                        String imageUrl = res.getImageUrl();
+                    if(holder.mItem.articleText != null){
+                        urlTextTextView.setVisibility(View.VISIBLE);
+                        urlTextTextView.setText(holder.mItem.articleText);
+                    } else{
+                        urlTextTextView.setVisibility(View.GONE);
+                    }
 
-                        if(text.length() > 2){
-                            System.out.println("URL text" + text);
-                            System.out.println("URL title" + title);
-
-                            TextView urlTextView = (TextView) holder.mView.findViewById(R.id.urlText);
-                            TextView urlTitleView = (TextView) holder.mView.findViewById(R.id.urlTitle);
-                            urlTextView.setVisibility(View.VISIBLE);
-                            urlTitleView.setVisibility(View.VISIBLE);
-                            urlTextView.setText(text);
-                            urlTitleView.setText(title);
-                        }
-
-                    } catch (Exception e){
-                        e.printStackTrace();
-                    }*/
-
-
+                    if(holder.mItem.articleImageURL != null){
+                        urlImageView.setVisibility(View.VISIBLE);
+                        UrlImageViewHelper.setUrlDrawable(urlImageView, holder.mItem.articleImageURL);
+                    } else{
+                        urlImageView.setVisibility(View.GONE);
+                    }
 
                 } catch(URISyntaxException e){
-
+                    e.printStackTrace();
                 }
 
             }

@@ -114,6 +114,9 @@ public class Data {
         }
         return null;
     }
+
+
+
     public ArrayList<Items> getAllItems(String storyType){
         if(storyType.equals(StoryType.TOPSTORIES)){
             return topStoryItems;

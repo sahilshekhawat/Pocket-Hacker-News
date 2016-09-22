@@ -13,6 +13,7 @@
 
     <LinearLayout
         android:id="@+id/post_title"
+        android:paddingTop="5dp"
         android:paddingBottom="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -74,11 +75,11 @@
             android:layout_marginRight="10dp">
 
             <ImageView
+                android:id="@+id/urlImage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:adjustViewBounds="true"
-                android:scaleType="centerInside"
+                android:scaleType="fitXY"
                 android:src="@drawable/default_post_image"/>
 
             <TextView
@@ -110,7 +111,10 @@
                     android:id="@+id/url"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/text_margin"
+                    android:layout_marginTop="@dimen/text_margin"
+                    android:layout_marginBottom="@dimen/text_margin"
+                    android:layout_marginLeft="5dp"
+                    android:text="google.com"
                     android:textSize="13sp"
                     android:textColor="@color/Blue"
                     android:textAppearance="?attr/textAppearanceListItem" />
@@ -121,10 +125,10 @@
                     android:layout_alignParentRight="true"
                     android:tint="@color/Blue"
                     android:src="@drawable/ic_link_black_48dp"
-                    android:layout_margin="@dimen/text_margin"/>
+                    android:layout_marginTop="@dimen/text_margin"
+                    android:layout_marginBottom="@dimen/text_margin"
+                    android:layout_marginRight="5dp"/>
             </RelativeLayout>
-
-
 
         </LinearLayout>
 
