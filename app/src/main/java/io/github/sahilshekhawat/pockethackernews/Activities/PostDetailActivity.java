@@ -3,10 +3,18 @@ package io.github.sahilshekhawat.pockethackernews.Activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ShareCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
@@ -33,9 +41,15 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
  */
 public class PostDetailActivity extends AppCompatActivity {
 
+
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
     private Items item;
+    private AppBarLayout appBarLayout;
+    private CoordinatorLayout coordinatorLayout;
+    private NestedScrollView nestedScrollView;
+    private ShareActionProvider mShareActionProvider;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +62,9 @@ public class PostDetailActivity extends AppCompatActivity {
             toolbar.setTitle("");
         }
 
-
-
-
+        appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
+        nestedScrollView = (NestedScrollView) findViewById(R.id.post_detail_container);
         //Changing fonts
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
                 .setDefaultFontPath("fonts/MuseoSans_500.otf")
@@ -62,8 +76,17 @@ public class PostDetailActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
            @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+
+
+               //nestedScrollView.scrollTo(0, 0);
+
+               CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
+               AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
+               if (behavior != null) {
+                   behavior.onNestedFling(coordinatorLayout, appBarLayout, null, 0, 10000, true);
+               }
+                //Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
+                //        .setAction("Action", null).show();
             }
         });
 
@@ -79,10 +102,8 @@ public class PostDetailActivity extends AppCompatActivity {
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle(" ");
-
+            actionBar.setTitle("Pocket Hacker News");
         }
-
         Long id = Long.parseLong(getIntent().getStringExtra(PostDetailFragment.ARG_ITEM_ID));
         item = Data.items.get(id);
 
@@ -94,13 +115,30 @@ public class PostDetailActivity extends AppCompatActivity {
         TextView externalUrlTextView = (TextView) findViewById(R.id.externalUrl);
         TextView hnUrlTextView = (TextView) findViewById(R.id.hnUrl);
 
-        titleTextView.setText(item.getTitle());
-        pointsTextView.setText(Long.toString(item.getScore()));
-        commentsTextView.setText(Integer.toString(item.getKids().size()) + " comments");
-        byTextView.setText(item.getBy());
-        externalUrlTextView.setText(item.getUrl());
+        if(item.getTitle() != null){
+            titleTextView.setText(item.getTitle());
+        }
+        if(item.getScore() != null){
+            pointsTextView.setText(Long.toString(item.getScore()));
+        }
+
+        if(item.getKids() != null){
+            commentsTextView.setText(Integer.toString(item.getKids().size()) + " comments");
+        }
+
+        if(item.getBy() != null){
+            byTextView.setText(item.getBy());
+        }
+
+        if(item.getUrl() != null){
+            externalUrlTextView.setText(item.getUrl());
+        }
+
         hnUrlTextView.setText("https://news.ycombinator.com/item?id=" + Long.toString(item.getId()));
-        timeTextView.setText(ConvertTime.toSmallHumanReadable(item.time));
+
+        if(item.getTime() != null){
+            timeTextView.setText(ConvertTime.toSmallHumanReadable(item.time));
+        }
 
         externalUrlTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,7 +187,25 @@ public class PostDetailActivity extends AppCompatActivity {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_post_details, menu);
 
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    private void showShareDialog() {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Pocket Hacker News");
+        intent.putExtra(Intent.EXTRA_TEXT, item.url);
+
+        startActivity(Intent.createChooser(intent, getString(R.string.menu_share)));
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -163,6 +219,9 @@ public class PostDetailActivity extends AppCompatActivity {
             //
             navigateUpTo(new Intent(this, PostListActivity.class));
             return true;
+        }
+        if (id == R.id.menu_share) {
+            showShareDialog();
         }
         return super.onOptionsItemSelected(item);
     }

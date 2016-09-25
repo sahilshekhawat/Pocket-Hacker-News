@@ -65,5 +65,7 @@
 
     <string name="login">Login</string>
 
+    <string name="menu_share">Share</string>
+
 
 </resources>

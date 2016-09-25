@@ -1,5 +1,6 @@
 
 <android.support.design.widget.CoordinatorLayout
+    android:id="@+id/coordinatorLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -16,43 +17,44 @@
         android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/toolbar_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
-            android:background="@color/colorPrimary"
-            app:contentScrim="@color/colorPrimary"
-            app:statusBarScrim="@color/colorPrimaryDark"
-            app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
-            app:toolbarId="@+id/toolbar">
-<!--
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fitsSystemWindows="true">
+        <!--       <android.support.design.widget.CollapsingToolbarLayout
+                   android:id="@+id/toolbar_layout"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:fitsSystemWindows="true"
+                   android:background="@color/colorPrimary"
+                   app:contentScrim="@color/colorPrimary"
+                   app:statusBarScrim="@color/colorPrimaryDark"
+                   app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
+                   app:toolbarId="@+id/toolbar">
 
-                <ImageView
-                    android:id="@+id/backdrop"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:fitsSystemWindows="true"
-                    app:layout_collapseMode="pin" />
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:fitsSystemWindows="true"
-                    android:background="@color/statusBarColor"/>
+                   <FrameLayout
+                       android:layout_width="match_parent"
+                       android:layout_height="match_parent"
+                       android:fitsSystemWindows="true">
 
-            </FrameLayout>
--->
+                       <ImageView
+                           android:id="@+id/backdrop"
+                           android:layout_width="match_parent"
+                           android:layout_height="match_parent"
+                           android:scaleType="centerCrop"
+                           android:fitsSystemWindows="true"
+                           app:layout_collapseMode="pin" />
+                       <View
+                           android:layout_width="match_parent"
+                           android:layout_height="match_parent"
+                           android:fitsSystemWindows="true"
+                           android:background="@color/statusBarColor"/>
+
+                   </FrameLayout>
+       -->
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/detail_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
+                android:fitsSystemWindows="true"
                 android:background="@color/colorPrimary"
                 android:minHeight="?attr/actionBarSize"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
@@ -61,7 +63,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:layout_marginTop="?attr/actionBarSize">
+                android:layout_marginTop="0dp">
 
 
                 <TextView
@@ -70,7 +72,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:text="Post Title"
-                    android:layout_marginRight="10dp"
+                    android:textSize="17sp"
+                    android:layout_marginRight="15dp"
                     android:layout_marginBottom="10dp"
                     android:textAppearance="?attr/textAppearanceListItem" />
 
@@ -78,11 +81,12 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="5dp">
 
                     <ImageView
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
+                        android:layout_width="13dp"
+                        android:layout_height="13dp"
                         android:rotation="270"
                         android:layout_marginLeft="10dp"
                         android:tint="@color/White"
@@ -93,14 +97,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="100"
-                        android:textSize="12sp"
+                        android:textSize="13sp"
+                        android:maxLines="1"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:layout_marginBottom="5dp"/>
 
                     <ImageView
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
+                        android:layout_width="13dp"
+                        android:layout_height="13dp"
                         android:src="@drawable/ic_comment_black_48dp"
                         android:tint="@color/White"/>
 
@@ -109,14 +114,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="100"
-                        android:textSize="12sp"
+                        android:textSize="13sp"
+                        android:maxLines="1"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:layout_marginBottom="5dp"/>
 
                     <ImageView
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
+                        android:layout_width="13dp"
+                        android:layout_height="13dp"
                         android:src="@drawable/ic_person"
                         android:tint="@color/White"/>
 
@@ -125,14 +131,15 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="sahil"
-                        android:textSize="12sp"
+                        android:maxLines="1"
+                        android:textSize="13sp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:layout_marginBottom="5dp"/>
 
                     <ImageView
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
+                        android:layout_width="13dp"
+                        android:layout_height="13dp"
                         android:src="@drawable/ic_access_time_black_48dp"
                         android:tint="@color/White"/>
 
@@ -141,7 +148,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="8 hours ago"
-                        android:textSize="12sp"
+                        android:textSize="13sp"
+                        android:maxLines="1"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:layout_marginBottom="5dp"/>
@@ -151,6 +159,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
+                    android:layout_marginBottom="5dp"
                     android:orientation="horizontal">
 
                     <ImageView
@@ -164,9 +173,10 @@
                         android:id="@+id/externalUrl"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="https://linkedin.com/in/sahilshekhawat/github.com/sahilshekhawatasdfasdfasfdasdfasdfasdfasdfasdfasdfasdf"
+                        android:text="https://linkedin.com/in/sahilshekhawat/github.com/"
 
-                        android:textSize="12sp"
+                        android:maxLines="1"
+                        android:textSize="13sp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:layout_marginBottom="5dp"/>
@@ -177,7 +187,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
-                    android:layout_marginBottom="30dp"
+                    android:layout_marginBottom="20dp"
                     android:orientation="horizontal">
 
 
@@ -193,7 +203,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="15dp"
                         android:text="https://linkedin.com/in/sahilshekhawat/github.com/sahilshekhawat"
-                        android:textSize="12sp"
+
+                        android:maxLines="1"
+                        android:textSize="13sp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:layout_marginBottom="5dp"/>
@@ -202,7 +214,6 @@
 
             </LinearLayout>
 
-        </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
 
@@ -218,8 +229,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|start"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_bookmark_white_48dp"
+        android:src="@drawable/ic_arrow_upward_white_48dp"
+
         app:layout_anchor="@+id/post_detail_container"
-        app:layout_anchorGravity="top|end" />
+        app:layout_anchorGravity="bottom|end" />
 
 </android.support.design.widget.CoordinatorLayout>

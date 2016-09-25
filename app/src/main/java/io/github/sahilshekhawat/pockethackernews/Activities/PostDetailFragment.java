@@ -49,10 +49,10 @@ public class PostDetailFragment extends Fragment {
             // to load content from a content provider.
             mItem = Data.items.get(Long.parseLong(getArguments().getString(ARG_ITEM_ID)));
             Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
-            if (appBarLayout != null) {
-                appBarLayout.setTitle("");
-            }
+//            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
+//            if (appBarLayout != null) {
+//                appBarLayout.setTitle("");
+//            }
         }
     }
 
