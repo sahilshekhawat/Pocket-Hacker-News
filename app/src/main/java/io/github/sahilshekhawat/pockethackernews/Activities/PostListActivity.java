@@ -49,6 +49,7 @@ import io.github.sahilshekhawat.pockethackernews.Data.Data;
 import io.github.sahilshekhawat.pockethackernews.Data.Items;
 import io.github.sahilshekhawat.pockethackernews.Data.StoryType;
 import io.github.sahilshekhawat.pockethackernews.R;
+import io.github.sahilshekhawat.pockethackernews.Utils.ConvertTime;
 import io.github.sahilshekhawat.pockethackernews.dummy.DummyContent;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -497,10 +498,24 @@ public class PostListActivity extends AppCompatActivity {
                     new ArticleMetaTagParser().execute(id);
                 }
 
+                //Adding prev data to it.
+                if(prevItem != null) {
+                    if(prevItem.articleTitle != null){
+                        item.articleTitle = prevItem.articleTitle;
+                    }
+                    if(prevItem.articleText != null){
+                        item.articleText = prevItem.articleText;
+                    }
+                    if(prevItem.articleImageURL != null){
+                        item.articleImageURL = prevItem.articleImageURL;
+                    }
+                }
+
                 Data.items.put(item.id, item);
                 if(isNewItem && position == storySize){
                     refreshContent();
                 }
+
             }
 
             @Override
@@ -577,10 +592,16 @@ public class PostListActivity extends AppCompatActivity {
                 itemRecyclerViewAdapter.notifyItemChanged(position);
             }
 
+            //Pre load images for faster loading.
             Items item = Data.items.get(id);
-//            if(item != null && item.articleImageURL != null) {
-//                UrlImageViewHelper.loadUrlDrawable(PostListActivity.this, item.articleImageURL);
-//            }
+            if(item != null && item.articleImageURL != null) {
+                try {
+                    UrlImageViewHelper.loadUrlDrawable(getBaseContext(), item.articleImageURL);
+                } catch(Exception e){
+                    //skip if any error occured.
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -613,32 +634,7 @@ public class PostListActivity extends AppCompatActivity {
                 holder.mView.findViewById(R.id.points_icon).setVisibility(View.GONE);
             }
             if(holder.mItem.time != null){
-                Date postTime = new Date(mValues.get(position).time*1000);
-                Date currTime = new Date();
-                long diff = currTime.getTime() - postTime.getTime();
-                long diffSeconds = (diff / 1000) % 60;
-                long diffMinutes = (diff / (60 * 1000)) % 60;
-                long diffHours = (diff / (60 * 60 * 1000)) % 24;
-                int diffInDays = (int) ((currTime.getTime() - postTime.getTime()) / (1000 * 60 * 60 * 24));
-                String assignedTime = "";
-                if (diffInDays > 1) {
-                    assignedTime = Long.toString(diffInDays) + " days ago";
-                } else if (diffInDays == 1) {
-                    assignedTime = (Long.toString(diffInDays) + " day and " +
-                            Long.toString(diffHours) + " hours ago");
-                }else if (diffHours > 1) {
-                    assignedTime = Long.toString(diffHours) + " hours ago";
-                } else if (diffHours == 1) {
-                    assignedTime = (Long.toString(diffHours) + " hour and " +
-                            Long.toString(diffMinutes) + " minutes ago");
-                } else if (diffMinutes > 1) {
-                    assignedTime = Long.toString(diffMinutes) + " minutes ago";
-                } else if (diffMinutes == 1) {
-                    assignedTime = Long.toString(diffMinutes) + " minute ago";
-                }
-                else{
-                    assignedTime = "seconds ago";
-                }
+                String assignedTime = ConvertTime.toHumanReadable(mValues.get(position).time);
                 holder.time.setText(assignedTime);
             }
             if(holder.mItem.by != null)

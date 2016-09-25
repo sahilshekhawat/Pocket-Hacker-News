@@ -10,13 +10,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
+import android.app.*;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import io.github.sahilshekhawat.pockethackernews.Activities.PostDetailFragment;
 import io.github.sahilshekhawat.pockethackernews.Activities.PostListActivity;
+import io.github.sahilshekhawat.pockethackernews.Data.Data;
+import io.github.sahilshekhawat.pockethackernews.Data.Items;
 import io.github.sahilshekhawat.pockethackernews.R;
+import io.github.sahilshekhawat.pockethackernews.Utils.ConvertTime;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -30,7 +35,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private Toolbar toolbar;
-
+    private Items item;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,15 +44,23 @@ public class PostDetailActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
+        if(toolbar != null){
+            toolbar.setTitle("");
+        }
+
+
+
+
         //Changing fonts
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
                 .setDefaultFontPath("fonts/MuseoSans_500.otf")
                 .setFontAttrId(R.attr.fontPath)
                 .build());
 
+        //Setting up Floading action bar for
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
-            @Override
+           @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
@@ -55,19 +68,57 @@ public class PostDetailActivity extends AppCompatActivity {
         });
 
         //Status bar color change
-
         Window window = this.getWindow();
         // clear FLAG_TRANSLUCENT_STATUS flag:
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         // finally change the color
-        window.setStatusBarColor(this.getResources().getColor(R.color.Transparent));
+        window.setStatusBarColor(this.getResources().getColor(R.color.colorPrimaryDark));
         // Show the Up button in the action bar.
-        ActionBar actionBar = getSupportActionBar();
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(" ");
+
         }
+
+        Long id = Long.parseLong(getIntent().getStringExtra(PostDetailFragment.ARG_ITEM_ID));
+        item = Data.items.get(id);
+
+        TextView titleTextView = (TextView) findViewById(R.id.articleTitle);
+        TextView pointsTextView = (TextView) findViewById(R.id.points);
+        TextView commentsTextView = (TextView) findViewById(R.id.comments);
+        TextView byTextView = (TextView) findViewById(R.id.by);
+        TextView timeTextView = (TextView) findViewById(R.id.time);
+        TextView externalUrlTextView = (TextView) findViewById(R.id.externalUrl);
+        TextView hnUrlTextView = (TextView) findViewById(R.id.hnUrl);
+
+        titleTextView.setText(item.getTitle());
+        pointsTextView.setText(Long.toString(item.getScore()));
+        commentsTextView.setText(Integer.toString(item.getKids().size()) + " comments");
+        byTextView.setText(item.getBy());
+        externalUrlTextView.setText(item.getUrl());
+        hnUrlTextView.setText("https://news.ycombinator.com/item?id=" + Long.toString(item.getId()));
+        timeTextView.setText(ConvertTime.toSmallHumanReadable(item.time));
+
+        externalUrlTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(PostDetailActivity.this, WebViewActivity.class);
+                intent.putExtra("url", item.url);
+                startActivity(intent);
+            }
+        });
+
+        hnUrlTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(PostDetailActivity.this, WebViewActivity.class);
+                intent.putExtra("url", "https://news.ycombinator.com/item?id="+Long.toString(item.id));
+                startActivity(intent);
+            }
+        });
 
         // savedInstanceState is non-null when there is fragment state
         // saved from previous configurations of this activity

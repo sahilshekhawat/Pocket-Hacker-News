@@ -51,7 +51,7 @@ public class PostDetailFragment extends Fragment {
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
-                appBarLayout.setTitle(mItem.title);
+                appBarLayout.setTitle("");
             }
         }
     }
@@ -62,9 +62,9 @@ public class PostDetailFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.post_detail, container, false);
 
         // Show the dummy content as text in a TextView.
-        if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.post_detail)).setText(mItem.text);
-        }
+        //if (mItem != null) {
+        //    ((TextView) rootView.findViewById(R.id.post_detail)).setText(mItem.text);
+        // }
 
         return rootView;
     }
