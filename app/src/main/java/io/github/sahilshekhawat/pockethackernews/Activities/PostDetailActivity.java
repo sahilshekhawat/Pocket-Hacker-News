@@ -77,7 +77,6 @@ public class PostDetailActivity extends AppCompatActivity {
            @Override
             public void onClick(View view) {
 
-
                //nestedScrollView.scrollTo(0, 0);
 
                CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();

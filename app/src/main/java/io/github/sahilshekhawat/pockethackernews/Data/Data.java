@@ -4,33 +4,26 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Data {
-    public ArrayList<Long> topStories;
-    public ArrayList<Long> newStories;
-    public ArrayList<Long> bestStories;
-    public ArrayList<Long> askStories;
-    public ArrayList<Long> showStories;
-    public ArrayList<Long> jobStories;
+    public static ArrayList<Long> topStories = new ArrayList<>();
+    public static  ArrayList<Long> newStories = new ArrayList<>();
+    public static  ArrayList<Long> bestStories = new ArrayList<>();
+    public static  ArrayList<Long> askStories = new ArrayList<>();
+    public static  ArrayList<Long> showStories = new ArrayList<>();
+    public static  ArrayList<Long> jobStories = new ArrayList<>();
 
-    public ArrayList<Items> topStoryItems;
-    public ArrayList<Items> newStoryItems;
-    public ArrayList<Items> bestStoryItems;
-    public ArrayList<Items> askStoryItems;
-    public ArrayList<Items> showStoryItems;
-    public ArrayList<Items> jobStoryItems;
+    public static ArrayList<Items> topStoryItems = new ArrayList<>();
+    public static ArrayList<Items> newStoryItems = new ArrayList<>();
+    public static ArrayList<Items> bestStoryItems = new ArrayList<>();
+    public static ArrayList<Items> askStoryItems = new ArrayList<>();
+    public static ArrayList<Items> showStoryItems = new ArrayList<>();
+    public static ArrayList<Items> jobStoryItems = new ArrayList<>();
 
-    public static HashMap<Long, Items> items;
+    public static ArrayList<Items> comments = new ArrayList<>();
 
-    public Data() {
-        items = new HashMap<>();
-        topStoryItems = new ArrayList<>();
-        newStoryItems = new ArrayList<>();
-        bestStoryItems = new ArrayList<>();
-        askStoryItems = new ArrayList<>();
-        showStoryItems = new ArrayList<>();
-        jobStoryItems = new ArrayList<>();
-    }
+    public static HashMap<Long, Items> items = new HashMap<>();
 
-    public void addItem(String storyType, int position, Items item){
+
+    public static void addItem(String storyType, int position, Items item){
         if(storyType.equals(StoryType.TOPSTORIES)){
             topStoryItems.add(position, item);
         }
@@ -51,7 +44,7 @@ public class Data {
         }
     }
 
-    public void addItem(String storyType, Items item){
+    public static void addItem(String storyType, Items item){
         if(storyType.equals(StoryType.TOPSTORIES)){
             topStoryItems.add(item);
         }
@@ -72,7 +65,7 @@ public class Data {
         }
     }
 
-    public void setItem(String storyType, int position, Items item){
+    public static void setItem(String storyType, int position, Items item){
         if(storyType.equals(StoryType.TOPSTORIES)){
             topStoryItems.set(position, item);
         }
@@ -93,7 +86,7 @@ public class Data {
         }
     }
 
-    public Items getItem(String storyType, int position){
+    public static Items getItem(String storyType, int position){
         if(storyType.equals(StoryType.TOPSTORIES)){
             return topStoryItems.get(position);
         }
@@ -117,7 +110,7 @@ public class Data {
 
 
 
-    public ArrayList<Items> getAllItems(String storyType){
+    public static ArrayList<Items> getAllItems(String storyType){
         if(storyType.equals(StoryType.TOPSTORIES)){
             return topStoryItems;
         }
@@ -139,7 +132,7 @@ public class Data {
         return null;
     }
 
-    public ArrayList<Long> getAllStories(String storyType){
+    public static ArrayList<Long> getAllStories(String storyType){
         if(storyType.equals(StoryType.TOPSTORIES)){
             return topStories;
         }
@@ -161,7 +154,7 @@ public class Data {
         return null;
     }
 
-    public void setAllItems(String storyType, ArrayList<Items> newItems){
+    public static void setAllItems(String storyType, ArrayList<Items> newItems){
         if(storyType.equals(StoryType.TOPSTORIES)){
             topStoryItems = newItems;
         }
@@ -185,7 +178,7 @@ public class Data {
 
 
 
-    public int itemContains(String storyType, Long id){
+    public static int itemContains(String storyType, Long id){
         ArrayList<Items> dataSet = new ArrayList<>();
         if(storyType.equals(StoryType.TOPSTORIES)){
             dataSet = topStoryItems;
@@ -213,7 +206,7 @@ public class Data {
         return -1;
     }
 
-    public void removeItem(String storyType, int position){
+    public static void removeItem(String storyType, int position){
         if(storyType.equals(StoryType.TOPSTORIES)){
             topStoryItems.remove(position);
         }

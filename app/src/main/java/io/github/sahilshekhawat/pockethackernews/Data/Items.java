@@ -21,6 +21,7 @@ public class Items {
     public String title = null;
     public ArrayList<Long> parts = null;
     public Long descendants = null;
+    public Integer level = 0;
 
     //Snacktory data
     public String articleTitle = null;

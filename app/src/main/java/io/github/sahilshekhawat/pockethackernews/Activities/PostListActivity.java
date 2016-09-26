@@ -90,7 +90,6 @@ public class PostListActivity extends AppCompatActivity {
     Firebase firebaseShowStories = null;
     Firebase firebaseJobStories = null;
     Firebase firebaseItems = null;
-    Data data;
     RecyclerView recyclerView;
     ItemRecyclerViewAdapter itemRecyclerViewAdapter;
     String currentStoryType;
@@ -146,10 +145,6 @@ public class PostListActivity extends AppCompatActivity {
             mTwoPane = true;
         }
 
-        //Setting data
-        data = new Data();
-
-
         //Getting data
         firebase = new Firebase("https://hacker-news.firebaseio.com/v0/");
         firebaseItems = firebase.child("item");
@@ -176,15 +171,15 @@ public class PostListActivity extends AppCompatActivity {
             swipeRefreshLayout.setRefreshing(true);
         }
         //Remove all previous items.
-        data.setAllItems(currentStoryType, new ArrayList<Items>());
+        Data.setAllItems(currentStoryType, new ArrayList<Items>());
         //All all items order wise, skip if not present.
-        ArrayList<Long> stories = data.getAllStories(currentStoryType);
+        ArrayList<Long> stories = Data.getAllStories(currentStoryType);
         for(Long id: stories){
             if(Data.items.get(id) != null){
-                data.addItem(currentStoryType, Data.items.get(id));
+                Data.addItem(currentStoryType, Data.items.get(id));
             }
         }
-        setupRecyclerViewAdapter(recyclerView, data.getAllItems(currentStoryType));
+        setupRecyclerViewAdapter(recyclerView, Data.getAllItems(currentStoryType));
         swipeRefreshLayout.setRefreshing(false);
     }
 
@@ -196,7 +191,7 @@ public class PostListActivity extends AppCompatActivity {
         }
         currentStoryType = StoryType.TOPSTORIES;
         swipeRefreshLayout.setRefreshing(true);
-        setupRecyclerViewAdapter(recyclerView, data.topStoryItems);
+        setupRecyclerViewAdapter(recyclerView, Data.topStoryItems);
         getData(firebaseTopStories, StoryType.TOPSTORIES);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -209,7 +204,7 @@ public class PostListActivity extends AppCompatActivity {
                         drawerLayout.closeDrawers();
                         currentStoryType = StoryType.TOPSTORIES;
                         //swipeRefreshLayout.setRefreshing(true);
-                        setupRecyclerViewAdapter(recyclerView, data.topStoryItems);
+                        setupRecyclerViewAdapter(recyclerView, Data.topStoryItems);
                         if(firebaseTopStories == null){
                             swipeRefreshLayout.setRefreshing(true);
                             firebaseTopStories = firebase.child(StoryType.TOPSTORIES);
@@ -225,7 +220,7 @@ public class PostListActivity extends AppCompatActivity {
                         drawerLayout.closeDrawers();
                         currentStoryType = StoryType.NEWSTORIES;
                         //swipeRefreshLayout.setRefreshing(true);
-                        setupRecyclerViewAdapter(recyclerView, data.newStoryItems);
+                        setupRecyclerViewAdapter(recyclerView, Data.newStoryItems);
                         if(firebaseNewStories == null){
                             swipeRefreshLayout.setRefreshing(true);
                             firebaseNewStories = firebase.child(StoryType.NEWSTORIES);
@@ -240,7 +235,7 @@ public class PostListActivity extends AppCompatActivity {
                         drawerLayout.closeDrawers();
                         currentStoryType = StoryType.ASKSTORIES;
                         //swipeRefreshLayout.setRefreshing(true);
-                        setupRecyclerViewAdapter(recyclerView, data.askStoryItems);
+                        setupRecyclerViewAdapter(recyclerView, Data.askStoryItems);
                         if(firebaseAskStories == null){
                             swipeRefreshLayout.setRefreshing(true);
                             firebaseAskStories = firebase.child(StoryType.ASKSTORIES);
@@ -256,7 +251,7 @@ public class PostListActivity extends AppCompatActivity {
                         drawerLayout.closeDrawers();
                         currentStoryType = StoryType.SHOWSTORIES;
                         //swipeRefreshLayout.setRefreshing(true);
-                        setupRecyclerViewAdapter(recyclerView, data.showStoryItems);
+                        setupRecyclerViewAdapter(recyclerView, Data.showStoryItems);
                         if(firebaseShowStories == null){
                             swipeRefreshLayout.setRefreshing(true);
                             firebaseShowStories = firebase.child(StoryType.SHOWSTORIES);
@@ -271,7 +266,7 @@ public class PostListActivity extends AppCompatActivity {
                         drawerLayout.closeDrawers();
                         currentStoryType = StoryType.BESTSTORIES;
                         //swipeRefreshLayout.setRefreshing(true);
-                        setupRecyclerViewAdapter(recyclerView, data.bestStoryItems);
+                        setupRecyclerViewAdapter(recyclerView, Data.bestStoryItems);
                         if(firebaseBestStories == null){
                             swipeRefreshLayout.setRefreshing(true);
                             firebaseBestStories = firebase.child(StoryType.BESTSTORIES);
@@ -284,7 +279,7 @@ public class PostListActivity extends AppCompatActivity {
                         drawerLayout.closeDrawers();
                         currentStoryType = StoryType.JOBSTORIES;
                         //
-                        setupRecyclerViewAdapter(recyclerView, data.jobStoryItems);
+                        setupRecyclerViewAdapter(recyclerView, Data.jobStoryItems);
                         if(firebaseJobStories == null){
                             swipeRefreshLayout.setRefreshing(true);
                             firebaseJobStories = firebase.child(StoryType.JOBSTORIES);
@@ -355,27 +350,27 @@ public class PostListActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Log.d("getData() " + child, ((ArrayList<Long>) dataSnapshot.getValue()).toString());
                 if(child.equals(StoryType.TOPSTORIES)){
-                    data.topStories = (ArrayList<Long>)dataSnapshot.getValue();
+                    Data.topStories = (ArrayList<Long>)dataSnapshot.getValue();
                     getItemsForType(StoryType.TOPSTORIES);
                 }
                 if(child.equals(StoryType.NEWSTORIES)) {
-                    data.newStories = (ArrayList<Long>)dataSnapshot.getValue();
+                    Data.newStories = (ArrayList<Long>)dataSnapshot.getValue();
                     getItemsForType(StoryType.NEWSTORIES);
                 }
                 if(child.equals(StoryType.ASKSTORIES)) {
-                    data.askStories = (ArrayList<Long>)dataSnapshot.getValue();
+                    Data.askStories = (ArrayList<Long>)dataSnapshot.getValue();
                     getItemsForType(StoryType.ASKSTORIES);
                 }
                 if(child.equals(StoryType.SHOWSTORIES)) {
-                    data.showStories = (ArrayList<Long>)dataSnapshot.getValue();
+                    Data.showStories = (ArrayList<Long>)dataSnapshot.getValue();
                     getItemsForType(StoryType.SHOWSTORIES);
                 }
                 if(child.equals(StoryType.BESTSTORIES)) {
-                    data.bestStories = (ArrayList<Long>)dataSnapshot.getValue();
+                    Data.bestStories = (ArrayList<Long>)dataSnapshot.getValue();
                     getItemsForType(StoryType.BESTSTORIES);
                 }
                 if(child.equals(StoryType.JOBSTORIES)) {
-                    data.jobStories = (ArrayList<Long>)dataSnapshot.getValue();
+                    Data.jobStories = (ArrayList<Long>)dataSnapshot.getValue();
                     getItemsForType(StoryType.JOBSTORIES);
                 }
 
@@ -392,27 +387,27 @@ public class PostListActivity extends AppCompatActivity {
         ArrayList<Long> stories = new ArrayList<>();
         ArrayList<Items> storiesItems = new ArrayList<>();
         if(storyType.equals(StoryType.TOPSTORIES)) {
-            stories = data.topStories;
-            //storiesItems = data.topStoryItems;
+            stories = Data.topStories;
+            //storiesItems = Data.topStoryItems;
         }
         if(storyType.equals(StoryType.BESTSTORIES)) {
-            stories = data.bestStories;
-            //storiesItems = data.bestStoryItems;
+            stories = Data.bestStories;
+            //storiesItems = Data.bestStoryItems;
         }
         if(storyType.equals(StoryType.NEWSTORIES)) {
-            stories = data.newStories;
-            //storiesItems = data.newStoryItems;
+            stories = Data.newStories;
+            //storiesItems = Data.newStoryItems;
         }
         if(storyType.equals(StoryType.SHOWSTORIES)) {
-            stories = data.showStories;
-            //storiesItems = data.showStoryItems;
+            stories = Data.showStories;
+            //storiesItems = Data.showStoryItems;
         }
         if(storyType.equals(StoryType.ASKSTORIES)) {
-            stories = data.askStories;
-            //storiesItems = data.askStoryItems;
+            stories = Data.askStories;
+            //storiesItems = Data.askStoryItems;
         }
         if(storyType.equals(StoryType.JOBSTORIES)) {
-            stories = data.jobStories;
+            stories = Data.jobStories;
         }
 
         Log.d("getItemsForType()", Integer.toString(stories.size()));
@@ -443,7 +438,7 @@ public class PostListActivity extends AppCompatActivity {
 //        ArrayList<Items> tmp = new ArrayList<>();
 //        Items newItem = new Items();
 //        newItem.id = id;
-//        data.addItem(storyType, position, newItem);
+//        Data.addItem(storyType, position, newItem);
 
         firebaseItem.addValueEventListener(new ValueEventListener() {
             @Override
@@ -587,7 +582,7 @@ public class PostListActivity extends AppCompatActivity {
         protected void onPostExecute(Long id) {
             super.onPostExecute(id);
 
-            int position = data.itemContains(currentStoryType, id);
+            int position = Data.itemContains(currentStoryType, id);
             if(position != -1){
                 itemRecyclerViewAdapter.notifyItemChanged(position);
             }
@@ -640,7 +635,7 @@ public class PostListActivity extends AppCompatActivity {
             if(holder.mItem.by != null)
                 holder.by.setText(mValues.get(position).by);
             if(holder.mItem.text != null)
-                holder.text.setText(Html.escapeHtml(mValues.get(position).text));
+                holder.text.setText(Html.fromHtml(mValues.get(position).text.trim()));
             if(holder.text.getText().length() < 2){
                 TextView textView = (TextView) holder.mView.findViewById(R.id.text);
                 textView.setVisibility(View.GONE);
