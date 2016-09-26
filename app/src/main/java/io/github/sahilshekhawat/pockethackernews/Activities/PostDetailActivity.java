@@ -77,13 +77,13 @@ public class PostDetailActivity extends AppCompatActivity {
            @Override
             public void onClick(View view) {
 
-               //nestedScrollView.scrollTo(0, 0);
+               nestedScrollView.scrollTo(0, 0);
 
-               CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
+               /*CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
                AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
                if (behavior != null) {
                    behavior.onNestedFling(coordinatorLayout, appBarLayout, null, 0, 10000, true);
-               }
+               }*/
                 //Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
                 //        .setAction("Action", null).show();
             }

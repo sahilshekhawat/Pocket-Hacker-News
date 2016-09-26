@@ -120,7 +120,7 @@ public class PostDetailFragment extends Fragment {
             Long id = mItem.kids.get(i);
 
             if(Data.items.get(id) == null){
-                getItem(mItem.kids.get(i), i, mItem.kids.size(), 0);
+                getItem(mItem.kids.get(i), i, mItem.kids.size());
             } else{
                 Data.comments.add(Data.items.get(id));
             }
@@ -155,7 +155,7 @@ public class PostDetailFragment extends Fragment {
         //swipeRefreshLayout.setRefreshing(false);
     }
 
-    private void getItem(final Long id, final int position, final int size, final int level,) {
+    private void getItem(final Long id, final int position, final int size) {
 
         Firebase firebaseItem = firebaseItems.child(Long.toString(id));
         firebaseItem.addValueEventListener(new ValueEventListener() {
@@ -201,7 +201,6 @@ public class PostDetailFragment extends Fragment {
                     item.setUrl((String) dataSnapshot.child("url").getValue());
                 }
 
-                item.level = level;
 
                 boolean isNewItem = false;
                 Items prevItem = Data.items.get(item.id);
@@ -241,10 +240,10 @@ public class PostDetailFragment extends Fragment {
         public void onBindViewHolder(final ViewHolder holder, int position) {
             holder.mItem = mValues.get(position);
             //Setting appropriate margins for comments.
-            LinearLayout linearLayout = (LinearLayout) holder.mView.findViewById(R.id.post_detail_main_linear_layout);
+/*            LinearLayout linearLayout = (LinearLayout) holder.mView.findViewById(R.id.post_detail_main_linear_layout);
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)linearLayout.getLayoutParams();
             params.setMargins(10+(holder.mItem.level*5),0,0,0);
-            linearLayout.setLayoutParams(params);
+            linearLayout.setLayoutParams(params);*/
 
             if(holder.mItem.by != null){
                 holder.by.setText(holder.mItem.by);
